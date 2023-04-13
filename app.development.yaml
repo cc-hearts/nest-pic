@@ -1,0 +1,18 @@
+mysql:
+  type:
+  database:
+  username:
+  password:
+  host:
+  logging:
+  port:
+
+# token 加密字段
+CRYPTO_SECRET_KEY:
+CRYPTO_ALGORITHM:
+CRYPTO_IV:
+
+redis:
+  port:
+  host:
+  password:
