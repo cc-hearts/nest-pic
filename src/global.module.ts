@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common'
-import { RedisService } from '../provider/redis.provider'
+import { containerKeyProvider } from './container-key/container-key.provider';
 
 @Global()
 @Module({
-  providers: [RedisService],
-  exports: [RedisService],
+  providers: [...containerKeyProvider],
+  exports: [...containerKeyProvider],
 })
 export class GlobalModule { }

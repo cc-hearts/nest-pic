@@ -40,6 +40,6 @@ lerna-debug.log*
 *.yml
 *.lock
 
-
+file/**/*
 app.production.yaml
 app.test.yaml

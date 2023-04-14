@@ -4,27 +4,22 @@ import * as process from 'process'
 import { resolve } from 'path'
 
 interface IConfig {
-  mysql: {
-    type: 'mysql'
-    database: string
-    username: string
-    password: string
-    host: string
-    logging: boolean
-    port: number
-  }
-
-  SYSTEM_ID: string
-  redis: {
-    host: string
-    port: number
-    password: string
-  }
-
-  CRYPTO_SECRET_KEY: string
-  CRYPTO_IV: string
-  CRYPTO_ALGORITHM: string
+  mysql: IMysql
+  oss_prefix: string
+  host: string
+  port: number
 }
+
+type IMysql = {
+  type: 'mysql'
+  database: string
+  username: string
+  password: string
+  host: string
+  logging: boolean
+  port: number
+}
+
 
 let config: IConfig
 

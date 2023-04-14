@@ -1,14 +1,15 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { ValidationPipe, VersioningType } from '@nestjs/common'
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common'
 import { generatorSwaggerDocument } from '../provider/swagger.provider'
 import { HttpInterceptor } from '../interceptors/http.interceptor'
 import { ExceptionFilters } from '../exceptions/exception.filter'
-import { AuthGuard } from '../guards/auth.guard'
-import { RedisService } from '../provider/redis.provider'
+import { NestExpressApplication } from '@nestjs/platform-express'
+import { join } from 'path'
+import { getConfig } from 'utils'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -23,9 +24,9 @@ async function bootstrap() {
 
   app.useGlobalFilters(new ExceptionFilters())
 
-  app.useGlobalGuards(new AuthGuard(app.get(RedisService)))
-
-  await app.listen(3000)
+  const { port } = getConfig()
+  app.useStaticAssets(join(__dirname, '..', '..'), { prefix: '/oss/' })
+  await app.listen(port)
 }
 
 bootstrap()

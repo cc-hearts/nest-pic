@@ -1,18 +1,12 @@
 mysql:
-  type:
-  database:
-  username:
-  password:
-  host:
-  logging:
-  port:
+  type: mysql
+  database: pic
+  username: root
+  password: '123456'
+  host: localhost
+  logging: true
+  port: 3306
 
-# token 加密字段
-CRYPTO_SECRET_KEY:
-CRYPTO_ALGORITHM:
-CRYPTO_IV:
-
-redis:
-  port:
-  host:
-  password:
+oss_prefix: 'oss'
+host: 'http://localhost:30002'
+port: 30002
