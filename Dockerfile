@@ -2,7 +2,7 @@ FROM node:latest as base-node
 
 LABEL maintainer="heart<7362469@qq.com>"
 
-WORKDIR /usr/node-stencil
+WORKDIR /usr/nest-pic
 
 COPY . .
 
@@ -14,7 +14,9 @@ RUN npm i
 
 RUN npm run build
 
-EXPOSE 3000
+RUN cp ./app.production.yaml ./dist/app.production.yaml
+
+EXPOSE 30002
 
 CMD npm run start:prod
 
