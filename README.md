@@ -1,5 +1,7 @@
 # Nest-Pic
 
+**English**  | [简体中文](./README.zh-CN.md)
+
 Nest-Pic is an open-source image hosting system built with the Nest framework for Node.js. It provides a simple and efficient way to upload, manage, and share images.
 
 ## Features
