@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { GlobalModule } from './global.module'
-import { UploadModule } from './upload/upload.module';
-import { ContainerKeyModule } from './container-key/container-key.module';
+import { UploadModule } from './upload/upload.module'
+import { ContainerKeyModule } from './container-key/container-key.module'
 import dataBaseProvider from '../provider/dataBase.provider'
 
 @Module({
@@ -9,9 +9,9 @@ import dataBaseProvider from '../provider/dataBase.provider'
     ...dataBaseProvider,
     GlobalModule,
     UploadModule,
-    ContainerKeyModule
+    ContainerKeyModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

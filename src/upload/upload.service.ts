@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { createWriteStream, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { Injectable } from '@nestjs/common'
+import { createWriteStream, existsSync, mkdirSync } from 'fs'
+import { join } from 'path'
 @Injectable()
 export class UploadService {
   private readonly folderName = 'file'
@@ -16,7 +16,6 @@ export class UploadService {
     }
     return folderPath
   }
-
 
   saveBinary(file: { buffer: Buffer }, path: string, fileName: string) {
     const filePath = join(path, fileName)

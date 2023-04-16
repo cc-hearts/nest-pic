@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ContainerKeyService } from './container-key.service';
+import { Test, TestingModule } from '@nestjs/testing'
+import { ContainerKeyService } from './container-key.service'
 
 describe('ContainerKeyService', () => {
-  let service: ContainerKeyService;
+  let service: ContainerKeyService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ContainerKeyService],
-    }).compile();
+    }).compile()
 
-    service = module.get<ContainerKeyService>(ContainerKeyService);
-  });
+    service = module.get<ContainerKeyService>(ContainerKeyService)
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    expect(service).toBeDefined()
+  })
+})

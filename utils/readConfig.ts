@@ -20,7 +20,6 @@ type IMysql = {
   port: number
 }
 
-
 let config: IConfig
 
 export function getConfig() {

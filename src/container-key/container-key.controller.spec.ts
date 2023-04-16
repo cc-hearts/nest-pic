@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ContainerKeyController } from './container-key.controller';
+import { Test, TestingModule } from '@nestjs/testing'
+import { ContainerKeyController } from './container-key.controller'
 
 describe('ContainerKeyController', () => {
-  let controller: ContainerKeyController;
+  let controller: ContainerKeyController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ContainerKeyController],
-    }).compile();
+    }).compile()
 
-    controller = module.get<ContainerKeyController>(ContainerKeyController);
-  });
+    controller = module.get<ContainerKeyController>(ContainerKeyController)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+})
