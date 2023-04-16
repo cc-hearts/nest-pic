@@ -7,6 +7,7 @@ interface IConfig {
   mysql: IMysql
   oss_prefix: string
   host: string
+  folder_name: string
   port: number
 }
 

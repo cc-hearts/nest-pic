@@ -9,4 +9,5 @@ mysql:
 
 oss_prefix: 'oss'
 host: 'http://localhost:30002'
+folder_name: 'file'
 port: 30002
