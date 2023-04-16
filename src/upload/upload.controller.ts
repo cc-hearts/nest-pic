@@ -19,7 +19,7 @@ export class UploadController {
   constructor(
     private readonly uploadService: UploadService,
     private readonly containerKeyService: ContainerKeyService
-  ) {}
+  ) { }
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
@@ -57,6 +57,7 @@ export class UploadController {
     this.uploadService.saveBinary({ buffer: binaryFile }, path, originalname)
     const relativePath = relative(process.cwd(), join(path, originalname))
     const url = `${host}/${oss_prefix}/${relativePath}`
+    Logger.log(url, 'save url:')
     return { url }
   }
 }
