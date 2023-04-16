@@ -29,7 +29,9 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '50mb' }))
 
   const { port, folder_name } = getConfig()
-  app.useStaticAssets(join(__dirname, '..', '..', folder_name), { prefix: `/oss/${folder_name}/` })
+  app.useStaticAssets(join(__dirname, '..', '..', folder_name), {
+    prefix: `/oss/${folder_name}/`,
+  })
   await app.listen(port)
 }
 
