@@ -1,56 +1,30 @@
-# Nest-Stencil
+# Nest-Pic
 
-Nest-Stencil is a repository, a Nest template library that provides a basic setup for developing REST apis. The repository provides pre-configuration support for Swagger and some custom decorators that simplify API development.
+Nest-Pic is an open-source image hosting system built with the Nest framework for Node.js. It provides a simple and efficient way to upload, manage, and share images.
 
 ## Features
 
-- [x] Swagger documentation support out of the box
-- [x] Custom decorators for cleaner, more concise code
-- [x] Preconfigured setup for easier API development
+- Easy to use: Nest Pic provides an intuitive user interface that makes it easy to upload, manage, and share pictures.
+- Image Management: Nest-Pic allows users to manage their uploaded images, including viewing, deleting, renaming and editing image information.
+- Image preview: Nest Pic supports image preview, allowing users to view uploaded images directly in the browser.
 
-## Getting Started
+## Install
 
-To get started with Nest-Stencil, simply clone the repository and install the necessary dependencies using npm:
+To install and run Nest-Pic on your local machine, follow these steps:
 
-```shell
-git clone https://github.com/cc-hearts/nest-stencli.git
-cd nest-stencil
-npm install
-```
+Make sure you have Node.js and npm (Node Package Manager) installed on your system.
+Clone the Nest-Pic repository from GitHub:
 
-This will install all of the necessary packages and dependencies needed to run the repository.
+> `git clone https://github.com/yourusername/nest-pic.git`
 
-After that, add the 'app.develop. yaml' configuration to configure the database
+Change directory to the cloned repository: cd nest-pic
+Copy the `app.development.yaml` file to `app.production.yaml` and configure the environment variables, such as database connection, secret key, and other settings.
+Run the npm run build command to build the Nest-Pic application.
 
-```yaml
-mysql:
-  type:
-  database:
-  username:
-  password:
-  host:
-  logging:
-  port:
+## Contributing
 
-# token 加密字段
-CRYPTO_SECRET_KEY:
-CRYPTO_ALGORITHM:
-CRYPTO_IV:
+If you are interested in contributing to Nest-Pic, you are welcome to contribute code, raise issues, or provide feedback. You can participate in the development of the project by creating issues or submitting pull requests.
 
-redis:
-  port:
-  host:
-  password:
-```
+## License
 
-Next, you can start the server using the following command:
-
-```shell
-npm run start:dev
-```
-
-This will start the server in development mode, allowing you to make changes and see the results in real-time.
-
-## Swagger Documentation
-
-Nest-Stencil comes with built-in support for Swagger documentation, allowing you to easily document your API endpoints. To access the Swagger documentation, simply navigate to http://localhost:3000/api in your browser.
+Nest-Pic is released under the MIT License. Please see the <a href="./LICENSE">LICENSE</a> file for details.
