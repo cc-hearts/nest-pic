@@ -2,6 +2,7 @@ import {
   Controller,
   HttpException,
   HttpStatus,
+  Logger,
   Post,
   Req,
   UploadedFile,
@@ -18,7 +19,7 @@ export class UploadController {
   constructor(
     private readonly uploadService: UploadService,
     private readonly containerKeyService: ContainerKeyService
-  ) {}
+  ) { }
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
@@ -29,14 +30,14 @@ export class UploadController {
   }
 
   @Post('pic')
-  @UseInterceptors(FileInterceptor('file'))
-  async pic(@UploadedFile() file: Express.Multer.File, @Req() request) {
-    const { filename, suffix, key } = request.body || {}
+  async pic(@Req() request) {
+    const { filename, suffix, key, file } = request.body || {}
+    Logger.log(`${filename} ${suffix} ${key}`)
     const bool = await this.containerKeyService.validateKey(key)
     if (!bool) return { message: '密钥验证失败' }
     const { oss_prefix, host } = getConfig()
     const path = this.uploadService.getStoredPath(key)
-    if (!file.buffer)
+    if (!file)
       throw new HttpException(
         '上传文件不能为空',
         HttpStatus.INTERNAL_SERVER_ERROR
@@ -52,7 +53,8 @@ export class UploadController {
         HttpStatus.INTERNAL_SERVER_ERROR
       )
     const originalname = `${filename}.${suffix}`
-    this.uploadService.saveBinary({ buffer: file.buffer }, path, originalname)
+    const binaryFile = Buffer.from(file, 'base64')
+    this.uploadService.saveBinary({ buffer: binaryFile }, path, originalname)
     const relativePath = relative(process.cwd(), join(path, originalname))
     const url = `${host}/${oss_prefix}/${relativePath}`
     return { url }
