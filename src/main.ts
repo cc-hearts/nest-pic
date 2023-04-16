@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { Logger, ValidationPipe, VersioningType } from '@nestjs/common'
+import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { generatorSwaggerDocument } from '../provider/swagger.provider'
 import { HttpInterceptor } from '../interceptors/http.interceptor'
 import { ExceptionFilters } from '../exceptions/exception.filter'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
+import { urlencoded, json } from 'express'
+
 import { getConfig } from 'utils'
 
 async function bootstrap() {
@@ -23,6 +25,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
 
   app.useGlobalFilters(new ExceptionFilters())
+  app.use(json({ limit: '50mb' }))
+  app.use(urlencoded({ extended: true, limit: '50mb' }))
 
   const { port } = getConfig()
   app.useStaticAssets(join(__dirname, '..', '..'), { prefix: '/oss/' })

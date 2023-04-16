@@ -19,7 +19,7 @@ export class UploadController {
   constructor(
     private readonly uploadService: UploadService,
     private readonly containerKeyService: ContainerKeyService
-  ) { }
+  ) {}
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
