@@ -20,18 +20,22 @@ export class UploadController {
     private readonly uploadService: UploadService,
     private readonly containerKeyService: ContainerKeyService
   ) {}
+
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     const path = this.uploadService.getStoredPath()
-    this.uploadService.saveBinary(file, path, file.originalname)
-    const relativePath = relative(process.cwd(), join(path, file.originalname))
+    const originalname = encodeURIComponent(file.originalname)
+    this.uploadService.saveBinary(file, path, originalname)
+    const relativePath = relative(process.cwd(), join(path, originalname))
     return { relativePath, status: true }
   }
 
   @Post('pic')
   async pic(@Req() request) {
-    const { filename, suffix, key, file } = request.body || {}
+    const { suffix, key, file } = request.body || {}
+    let filename = request.body?.filename || ''
+    filename = encodeURIComponent(filename)
     Logger.log(`${filename} ${suffix} ${key}`)
     const bool = await this.containerKeyService.validateKey(key)
     if (!bool) return { message: '密钥验证失败' }
