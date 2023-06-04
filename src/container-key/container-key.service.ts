@@ -10,7 +10,6 @@ export class ContainerKeyService {
     private readonly containerKeyRepository: Repository<ContainerKey>
   ) {}
   async genKey() {
-    console.log('123')
     if (isProd()) return { message: 'production mode is not generator key' }
     let id = nanoid()
     while (
