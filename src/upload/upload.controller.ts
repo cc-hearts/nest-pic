@@ -25,9 +25,9 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     const path = this.uploadService.getStoredPath()
-    const originalname = encodeURIComponent(file.originalname)
-    this.uploadService.saveBinary(file, path, originalname)
-    const relativePath = relative(process.cwd(), join(path, originalname))
+    const originalName = encodeURIComponent(file.originalname)
+    this.uploadService.saveBinary(file, path, originalName)
+    const relativePath = relative(process.cwd(), join(path, originalName))
     return { relativePath, status: true }
   }
 
@@ -56,10 +56,10 @@ export class UploadController {
         '上传文件后缀不能为空',
         HttpStatus.INTERNAL_SERVER_ERROR
       )
-    const originalname = `${filename}.${suffix}`
+    const originalName = `${filename}.${suffix}`
     const binaryFile = Buffer.from(file, 'base64')
-    this.uploadService.saveBinary({ buffer: binaryFile }, path, originalname)
-    const relativePath = relative(process.cwd(), join(path, originalname))
+    this.uploadService.saveBinary({ buffer: binaryFile }, path, originalName)
+    const relativePath = relative(process.cwd(), join(path, originalName))
     const url = `${host}/${oss_prefix}/${relativePath}`
     Logger.log(url, 'save url:')
     return { url }
