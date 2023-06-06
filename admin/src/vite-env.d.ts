@@ -1,5 +1,9 @@
 /// <reference types="vite/client" />
 /// <reference types="vite-plugin-pages/client" />
+
+import { namespace } from 'naive-ui/es/_utils/cssr'
+
+
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
   const component: DefineComponent<object, object, any>
@@ -14,4 +18,13 @@ declare module '*.md' {
   import type { ComponentOptions } from 'vue'
   const Component: ComponentOptions
   export default Component
+}
+
+
+declare global {
+  const process = {
+    env: {
+      NODE_ENV: string
+    }
+  }
 }

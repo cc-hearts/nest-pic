@@ -23,7 +23,7 @@ export default defineConfig({
   }),
   Pages({
     dirs: "src/pages",
-    extensions: ['vue', 'md']
+    extensions: ['vue', 'md', 'jsx', 'tsx']
   }),
   Markdown({
     wrapperClasses: 'prose prose-sm m-auto text-left',

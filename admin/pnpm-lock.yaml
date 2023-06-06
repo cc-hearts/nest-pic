@@ -7,6 +7,9 @@ dependencies:
   '@cc-heart/utils':
     specifier: ^2.0.11
     version: 2.0.11
+  '@cc-heart/utils-client':
+    specifier: ^0.0.9
+    version: 0.0.9
   '@intlify/unplugin-vue-i18n':
     specifier: ^0.10.0
     version: 0.10.0(vue-i18n@9.2.2)
@@ -434,6 +437,12 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - typescript
+    dev: false
+
+  /@cc-heart/utils-client@0.0.9:
+    resolution: {integrity: sha512-ZNFAu9jmfOSYyco9YWbRgz+63v5iLVwPQ3b+m57L61A/cH2BVCKYF2kWlExhzo3fiUgPESGaebbunzFECFJDHQ==}
+    dependencies:
+      consola: 2.15.3
     dev: false
 
   /@cc-heart/utils@2.0.11:
@@ -1754,6 +1763,10 @@ packages:
 
   /concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  /consola@2.15.3:
+    resolution: {integrity: sha512-9vAdYbHj6x2fLKC4+oPH0kFzY/orMZyG2Aj+kNylHxKGJ/Ed4dpNyAQYwJOdqO4zdM7XpVHmyejQDcQHrnuXbw==}
+    dev: false
 
   /consola@3.1.0:
     resolution: {integrity: sha512-rrrJE6rP0qzl/Srg+C9x/AE5Kxfux7reVm1Wh0wCjuXvih6DqZgqDZe8auTD28fzJ9TF0mHlSDrPpWlujQRo1Q==}

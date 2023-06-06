@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { GlobalModule } from './global.module'
 import { UploadModule } from './upload/upload.module'
 import { ContainerKeyModule } from './container-key/container-key.module'
-import { PicModule } from './pic/pic.module';
+
 import dataBaseProvider from '../provider/dataBase.provider'
 
 @Module({
@@ -11,7 +11,6 @@ import dataBaseProvider from '../provider/dataBase.provider'
     GlobalModule,
     UploadModule,
     ContainerKeyModule,
-    PicModule,
   ],
   controllers: [],
   providers: [],
