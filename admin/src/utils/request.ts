@@ -2,7 +2,8 @@ import { Request } from '@cc-heart/utils-client'
 import type { params } from '@cc-heart/utils-client/dist/types/src/utils/request'
 import type { IBaseResponse } from '@/typings'
 import { router } from '@/modules/router'
-import { getToken, errorMsg, clearToken } from '.'
+import { getToken, clearToken } from '@/storage'
+import { errorMsg } from '.'
 import { baseUrl, prefix } from '@/configs'
 
 const request = new Request<IBaseResponse>([baseUrl, prefix].join('/'))

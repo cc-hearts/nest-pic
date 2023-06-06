@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useIsDark, useToggleDark, useNamespace } from "@/hooks";
 import { SunIcon, MoonIcon } from "@/icons";
+import { useIsDark, useToggleDark, useNamespace } from "@/hooks";
 const checked = ref(false);
 function handleToggleTheme() {
   useToggleDark();
@@ -21,17 +21,9 @@ onMounted(() => {
 
 <template>
   <div class="flex" :class="[ns.cls]">
-    <button
-      role="switch"
-      class="relative block shrink-0 outline-0"
-      :aria-checked="checked"
-      @click="handleToggleTheme"
-    >
+    <button role="switch" class="relative block shrink-0 outline-0" :aria-checked="checked" @click="handleToggleTheme">
       <span :class="[ns.e('check')]">
-        <span
-          class="relative block overflow-hidden rounded-full"
-          :class="[ns.e('icon')]"
-        >
+        <span class="relative block overflow-hidden rounded-full" :class="[ns.e('icon')]">
           <SunIcon />
           <MoonIcon />
         </span>
@@ -73,6 +65,7 @@ onMounted(() => {
 
     &[aria-checked="true"] {
       $is-at-root: false !global;
+
       @include e("check") {
         transform: translate(var(--switch-translate-x));
       }
