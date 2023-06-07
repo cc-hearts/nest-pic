@@ -1,5 +1,5 @@
-import { baseUrl, ossPrefix } from '@/configs'
+import { fileUrl, ossPrefix } from '@/configs'
 
 export function useImagePath(imgPath: string) {
-  return `${baseUrl}/${ossPrefix}/${imgPath}`
+  return `${fileUrl}/${ossPrefix}/${imgPath}`
 }
