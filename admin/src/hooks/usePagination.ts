@@ -1,5 +1,5 @@
-import { reactive } from "vue"
-import type { IPage, IPaginationParams } from "@/typings"
+import { reactive } from 'vue'
+import type { IPage, IPaginationParams } from '@/typings'
 import type { fn } from '@cc-heart/utils/helper'
 export function usePagination(
   pagination: IPage | object = {},

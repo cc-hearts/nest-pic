@@ -1,4 +1,3 @@
-
 const THEMEKEY = 'theme'
 
 export function setTheme(theme: string) {

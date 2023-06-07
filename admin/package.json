@@ -1,12 +1,14 @@
 {
-  "name": "v",
+  "name": "pic-admin",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "prettier": "prettier --write .",
     "scss": "npx sass ./src/assets/scss/test/test.scss  ./src/assets/scss/test/dist/test.css"
   },
   "dependencies": {
@@ -34,6 +36,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
     "eslint-plugin-vue": "^9.14.1",
+    "prettier": "^2.8.8",
     "typescript": "^5.0.2",
     "vite": "^4.3.8",
     "vue-tsc": "^1.4.2"

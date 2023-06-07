@@ -1,6 +1,12 @@
-import { VNodeChild } from "vue"
+import { VNodeChild } from 'vue'
 
-export type placementType = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'bottom' | 'top'
+export type placementType =
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'bottom'
+  | 'top'
 
 export interface ITableColumn<T = any> {
   title: string
@@ -10,11 +16,10 @@ export interface ITableColumn<T = any> {
   render?: (rowData: T, index: number) => VNodeChild
 }
 
-
 export interface ITableResponse<T = RowData> {
   columns: Array<ITableColumn<T>>
   dataSource: T[]
   total?: number
 }
 
-export type RowData = Record<string, any>;
+export type RowData = Record<string, any>

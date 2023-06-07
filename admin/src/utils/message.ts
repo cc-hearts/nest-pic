@@ -7,7 +7,7 @@ export function msg(type: msgType, meta: string, content?: string) {
     content,
     meta,
     duration: 2500,
-    keepAliveOnHover: true
+    keepAliveOnHover: true,
   })
 }
 
@@ -20,5 +20,5 @@ export function errorMsg(message: string, title = '错误') {
 }
 
 export function warn(message: string) {
-  console.warn(message);
+  console.warn(message)
 }

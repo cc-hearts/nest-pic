@@ -1,14 +1,14 @@
-import { isDark } from "@/configs";
-import { setTheme } from "@/storage";
+import { isDark } from '@/configs'
+import { setTheme } from '@/storage'
 export function useToggleDark() {
-  const el = document.documentElement;
-  const token = el.classList;
-  const hasDarkClassName = token.contains("dark");
+  const el = document.documentElement
+  const token = el.classList
+  const hasDarkClassName = token.contains('dark')
   if (hasDarkClassName) {
-    token.remove("dark");
+    token.remove('dark')
   } else {
-    token.add("dark");
+    token.add('dark')
   }
-  isDark.value = !isDark.value;
-  setTheme(isDark.value ? "dark" : "light");
+  isDark.value = !isDark.value
+  setTheme(isDark.value ? 'dark' : 'light')
 }

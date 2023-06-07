@@ -3,7 +3,6 @@
 
 import { namespace } from 'naive-ui/es/_utils/cssr'
 
-
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
   const component: DefineComponent<object, object, any>
@@ -20,11 +19,10 @@ declare module '*.md' {
   export default Component
 }
 
-
 declare global {
   const process = {
     env: {
-      NODE_ENV: string
-    }
+      NODE_ENV: string,
+    },
   }
 }

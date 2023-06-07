@@ -1,9 +1,9 @@
 import {
-  Controller,
+  Controller, Get,
   HttpException,
   HttpStatus,
-  Logger,
-  Post,
+  Logger, Param,
+  Post, Query,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -14,6 +14,7 @@ import { UploadService } from './upload.service'
 import { join, relative } from 'path'
 import { getConfig } from 'utils'
 import { ContainerKeyService } from 'src/container-key/container-key.service'
+import {BasePaginationDto} from "../../common/basePagination.dto";
 @Controller('upload')
 export class UploadController {
   constructor(
@@ -31,6 +32,11 @@ export class UploadController {
     return { relativePath, status: true }
   }
 
+  @Get('getUploadFileList/:namespace')
+  getUploadFileList(@Param() params: { namespace:string }, @Query() pagination: BasePaginationDto) {
+      const { namespace } = params
+      return this.uploadService.getUploadFileList(namespace,pagination)
+  }
   @Post('pic')
   async pic(@Req() request) {
     const { suffix, key, file } = request.body || {}
@@ -60,6 +66,7 @@ export class UploadController {
     const binaryFile = Buffer.from(file, 'base64')
     this.uploadService.saveBinary({ buffer: binaryFile }, path, originalName)
     const relativePath = relative(process.cwd(), join(path, originalName))
+    this.uploadService.saveOssFile(relativePath,key)
     const url = `${host}/${oss_prefix}/${relativePath}`
     Logger.log(url, 'save url:')
     return { url }

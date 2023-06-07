@@ -6,9 +6,7 @@ export function useInitTheme() {
     const transition = document.body.style.transition
     document.body.style.transition = 'none'
     isDark.value = getTheme() === 'dark'
-    isDark.value
-      ? classList.add('dark')
-      : classList.remove('dark')
+    isDark.value ? classList.add('dark') : classList.remove('dark')
     document.body.offsetHeight // 回流
     document.body.style.transition = transition
   }

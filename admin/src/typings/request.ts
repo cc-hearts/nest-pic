@@ -14,4 +14,3 @@ export interface IPage {
 export interface IPaginationParams {
   total?: number
 }
-

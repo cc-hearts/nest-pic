@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import Headers from '@/components/header/headers.vue';
+import Headers from '@/components/header/headers.vue'
 import Home from '@/layouts/home'
 import { NConfigProvider, NNotificationProvider, darkTheme } from 'naive-ui'
 import { placement, isDark } from '@/configs'
-import { computed } from 'vue';
-const theme = computed(() => isDark.value ? darkTheme : undefined)
+import { computed } from 'vue'
+const theme = computed(() => (isDark.value ? darkTheme : undefined))
 </script>
 
 <template>
-  <NConfigProvider :theme="theme" :placement="placement" class="flex w-full h-full flex-col">
+  <NConfigProvider
+    :theme="theme"
+    :placement="placement"
+    class="flex w-full h-full flex-col"
+  >
     <NNotificationProvider>
       <Headers />
       <Home />
@@ -22,7 +26,6 @@ const theme = computed(() => isDark.value ? darkTheme : undefined)
   padding: 0;
   box-sizing: border-box;
 }
-
 
 body,
 html,

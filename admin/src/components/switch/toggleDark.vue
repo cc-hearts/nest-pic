@@ -1,29 +1,37 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { SunIcon, MoonIcon } from "@/icons";
-import { useIsDark, useToggleDark, useNamespace } from "@/hooks";
-const checked = ref(false);
+import { onMounted, ref } from 'vue'
+import { SunIcon, MoonIcon } from '@/icons'
+import { useIsDark, useToggleDark, useNamespace } from '@/hooks'
+const checked = ref(false)
 function handleToggleTheme() {
-  useToggleDark();
-  toggleChecked();
+  useToggleDark()
+  toggleChecked()
 }
 
-const ns = useNamespace("appearance");
+const ns = useNamespace('appearance')
 
 function toggleChecked() {
-  checked.value = useIsDark();
+  checked.value = useIsDark()
 }
 
 onMounted(() => {
-  toggleChecked();
-});
+  toggleChecked()
+})
 </script>
 
 <template>
   <div class="flex" :class="[ns.cls]">
-    <button role="switch" class="relative block shrink-0 outline-0" :aria-checked="checked" @click="handleToggleTheme">
+    <button
+      role="switch"
+      class="relative block shrink-0 outline-0"
+      :aria-checked="checked"
+      @click="handleToggleTheme"
+    >
       <span :class="[ns.e('check')]">
-        <span class="relative block overflow-hidden rounded-full" :class="[ns.e('icon')]">
+        <span
+          class="relative block overflow-hidden rounded-full"
+          :class="[ns.e('icon')]"
+        >
           <SunIcon />
           <MoonIcon />
         </span>
@@ -33,11 +41,11 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-@use "@/assets/scss/var/variable.scss" as *;
-@use "@/assets/scss/common/mixins.scss" as *;
+@use '@/assets/scss/var/variable.scss' as *;
+@use '@/assets/scss/common/mixins.scss' as *;
 
 .dark {
-  @include b("appearance") {
+  @include b('appearance') {
     --switch-border-divider: #545454a6;
     --switch-bg-color: #3a3a3a;
     --switch-checked-color: #1a1a1a;
@@ -46,7 +54,7 @@ onMounted(() => {
   }
 }
 
-@include b("appearance") {
+@include b('appearance') {
   --switch-border-divider: #3c3c3c4a;
   --switch-bg-color: #f1f1f1;
   --switch-checked-color: #fff;
@@ -63,10 +71,10 @@ onMounted(() => {
     background-color: var(--switch-bg-color);
     transition: border-color 0.25s;
 
-    &[aria-checked="true"] {
+    &[aria-checked='true'] {
       $is-at-root: false !global;
 
-      @include e("check") {
+      @include e('check') {
         transform: translate(var(--switch-translate-x));
       }
 
@@ -82,7 +90,7 @@ onMounted(() => {
     }
   }
 
-  @include e("icon") {
+  @include e('icon') {
     width: 18px;
     height: 18px;
 
@@ -96,7 +104,7 @@ onMounted(() => {
     }
   }
 
-  @include e("check") {
+  @include e('check') {
     position: absolute;
     top: 1px;
     left: 1px;
