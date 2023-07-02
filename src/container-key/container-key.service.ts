@@ -3,8 +3,8 @@ import { Repository } from 'typeorm'
 import { ContainerKey } from './container-key.entity'
 import { nanoid } from 'nanoid'
 import { isProd } from 'utils'
-import {ContainerKeyDto} from "./container-key.dto";
-import {sumPagination} from "../../utils/sumPagination";
+import { ContainerKeyDto } from './container-key.dto'
+import { sumPagination } from '../../utils/sumPagination'
 @Injectable()
 export class ContainerKeyService {
   constructor(
@@ -38,5 +38,4 @@ export class ContainerKeyService {
   async getPicList(pagination: ContainerKeyDto) {
     return await sumPagination(pagination, this.containerKeyRepository)
   }
-
 }

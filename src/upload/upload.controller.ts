@@ -1,9 +1,14 @@
 import {
-  Controller, Get,
+  Body,
+  Controller,
+  Get,
   HttpException,
   HttpStatus,
-  Logger, Param,
-  Post, Query,
+  Logger,
+  Param,
+  Post,
+  Put,
+  Query,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -14,7 +19,8 @@ import { UploadService } from './upload.service'
 import { join, relative } from 'path'
 import { getConfig } from 'utils'
 import { ContainerKeyService } from 'src/container-key/container-key.service'
-import {BasePaginationDto} from "../../common/basePagination.dto";
+import { BasePaginationDto } from '../../common/basePagination.dto'
+import { UploadFileNameDto } from './upload.dto'
 @Controller('upload')
 export class UploadController {
   constructor(
@@ -33,15 +39,18 @@ export class UploadController {
   }
 
   @Get('getUploadFileList/:namespace')
-  getUploadFileList(@Param() params: { namespace:string }, @Query() pagination: BasePaginationDto) {
-      const { namespace } = params
-      return this.uploadService.getUploadFileList(namespace,pagination)
+  getUploadFileList(
+    @Param() params: { namespace: string },
+    @Query() pagination: BasePaginationDto
+  ) {
+    const { namespace } = params
+    return this.uploadService.getUploadFileList(namespace, pagination)
   }
+
   @Post('pic')
   async pic(@Req() request) {
     const { suffix, key, file } = request.body || {}
-    let filename = request.body?.filename || ''
-    filename = encodeURIComponent(filename)
+    const filename = request.body?.filename || ''
     Logger.log(`${filename} ${suffix} ${key}`)
     const bool = await this.containerKeyService.validateKey(key)
     if (!bool) return { message: '密钥验证失败' }
@@ -66,9 +75,14 @@ export class UploadController {
     const binaryFile = Buffer.from(file, 'base64')
     this.uploadService.saveBinary({ buffer: binaryFile }, path, originalName)
     const relativePath = relative(process.cwd(), join(path, originalName))
-    this.uploadService.saveOssFile(relativePath,key)
+    this.uploadService.saveOssFile(relativePath, key)
     const url = `${host}/${oss_prefix}/${relativePath}`
     Logger.log(url, 'save url:')
     return { url }
+  }
+
+  @Put('modifyPicName')
+  modifyFileName(@Body() updateFileNameDto: UploadFileNameDto) {
+    console.log(updateFileNameDto)
   }
 }

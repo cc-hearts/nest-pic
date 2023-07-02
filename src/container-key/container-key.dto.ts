@@ -1,2 +1,2 @@
-import {BasePaginationDto} from "../../common/basePagination.dto";
+import { BasePaginationDto } from '../../common/basePagination.dto'
 export class ContainerKeyDto extends BasePaginationDto {}

@@ -1,13 +1,13 @@
-const THEMEKEY = 'theme'
+const THEME_KEY = 'theme'
 
 export function setTheme(theme: string) {
-  localStorage.setItem(THEMEKEY, theme)
+  localStorage.setItem(THEME_KEY, theme)
 }
 
 export function getTheme() {
-  return localStorage.getItem(THEMEKEY)
+  return localStorage.getItem(THEME_KEY)
 }
 
 export function clearTheme() {
-  localStorage.removeItem(THEMEKEY)
+  localStorage.removeItem(THEME_KEY)
 }

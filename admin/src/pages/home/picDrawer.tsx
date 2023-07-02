@@ -1,6 +1,6 @@
 import { defineComponent, watch } from 'vue'
 import { Drawer } from '@/features/components'
-import { NButton, NDataTable, NImage, NPopover, NTag } from 'naive-ui'
+import { NDataTable, NImage, NPopover, NTag } from 'naive-ui'
 import { defineTableState, useImagePath, usePagination } from '@/hooks'
 import { getUploadFileList } from '@/features/pic'
 import { isObject } from '@cc-heart/utils'
@@ -38,7 +38,6 @@ export default defineComponent({
         state.columns = columns.map((column) => {
           if (column.slot === 'filePath') {
             column.render = (rowData) => {
-              // trigger={<NButton>点击</NButton>}
               return (
                 <NPopover trigger="click">
                   {{
