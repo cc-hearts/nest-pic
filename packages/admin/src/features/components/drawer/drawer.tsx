@@ -1,6 +1,8 @@
 import { defineComponent } from 'vue'
 import { NDrawer, NDrawerContent } from 'naive-ui'
 import { drawerPlacement } from '@/configs'
+import { noop } from '@cc-heart/utils'
+
 export default defineComponent({
   props: {
     visible: {
@@ -17,7 +19,7 @@ export default defineComponent({
     },
     onChange: {
       type: Function,
-      default: () => {},
+      default: noop,
     },
   },
   setup(props, { slots }) {

@@ -17,6 +17,7 @@ request.useResponseInterceptor((data) => {
     clearToken()
     router.push('/login')
   }
+  errorMsg(message)
   return Promise.reject(message)
 })
 

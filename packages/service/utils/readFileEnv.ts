@@ -8,7 +8,7 @@ import * as fs from 'fs'
 // 以逗号为分隔符 将前面的和后面的字符串截取出来  匹配由逗号前面的字符组成的字符串
 const reg = /(?:^(.*?)=(.*))/gm
 // 删除注释
-const annotation = /^((\s*)\#.*?\n)|(\#[!\'\"]*?$)/gm
+const annotation = /^((\s*)#.*?\n)|(#[!'"]*?$)/gm
 
 function readEnvFileSync(path = process.cwd() + '/.env', obj) {
   try {

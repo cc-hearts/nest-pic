@@ -7,10 +7,10 @@ export const prefix = 'v1'
 export const ossPrefix = 'oss'
 export const defaultNamespace = 'cc'
 
-let baseUrl, fileUrl, url
+let fileUrl: string
 
-url = isDev ? 'http://localhost:30002' : 'http://www.cc-hearts.cn:30002'
-baseUrl = fileUrl = url
+const url = isDev ? 'http://localhost:30002' : 'http://www.cc-hearts.cn:30002'
+const baseUrl = (fileUrl = url)
 
 export { baseUrl, fileUrl }
 

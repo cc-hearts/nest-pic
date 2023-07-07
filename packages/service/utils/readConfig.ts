@@ -9,6 +9,7 @@ interface IConfig {
   host: string
   folder_name: string
   port: number
+  secret: string
 }
 
 type IMysql = {

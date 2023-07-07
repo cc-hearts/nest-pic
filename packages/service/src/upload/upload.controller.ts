@@ -9,7 +9,7 @@ import {
   Post,
   Put,
   Query,
-  Req,
+  Req, Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
@@ -20,7 +20,11 @@ import { join, relative } from 'path'
 import { getConfig } from 'utils'
 import { ContainerKeyService } from 'src/container-key/container-key.service'
 import { BasePaginationDto } from '../../common/basePagination.dto'
-import { UploadFileNameDto } from './upload.dto'
+import {GetFileDto, UploadFileNameDto} from './upload.dto'
+import {ApiOperation, ApiTags} from "@nestjs/swagger";
+
+
+@ApiTags("文件上传服务")
 @Controller('upload')
 export class UploadController {
   constructor(
@@ -84,5 +88,16 @@ export class UploadController {
   @Put('modifyPicName')
   modifyFileName(@Body() updateFileNameDto: UploadFileNameDto) {
     console.log(updateFileNameDto)
+  }
+
+  /**
+   * @description 查询指定路径下的文件夹或者文件 从命名空间为集合开始查找
+   * @param getFileDto
+   */
+  @ApiOperation({ summary: '查询指定路径下的文件夹或者文件' })
+  @Post("getFileListByPath")
+  getFile(@Body() getFileDto: GetFileDto) {
+    const { path } = getFileDto
+    return this.uploadService.getFile(path)
   }
 }

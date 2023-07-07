@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "bootstrap": "pnpm install --filter @pic/service",
-    "service": "pnpm --filter @pic/service run start:dev"
+    "dev": "pnpm --filter @pic/admin run dev",
+    "service": "pnpm --filter @pic/nest run start:dev"
   },
   "keywords": [
     "pic",

@@ -3,8 +3,9 @@ import { Repository } from 'typeorm'
 import { ContainerKey } from './container-key.entity'
 import { nanoid } from 'nanoid'
 import { isProd } from 'utils'
-import { ContainerKeyDto } from './container-key.dto'
+import {AddNamespaceDto, ContainerKeyDto} from './container-key.dto'
 import { sumPagination } from '../../utils/sumPagination'
+
 @Injectable()
 export class ContainerKeyService {
   constructor(
@@ -24,6 +25,15 @@ export class ContainerKeyService {
     })
   }
 
+  async addNamespace(dto: AddNamespaceDto) {
+    const { name } = dto
+    await this.containerKeyRepository.findOne({
+      where: {
+        containerKey: name
+      }
+    })
+
+  }
   async validateKey(key: string) {
     if (
       await this.containerKeyRepository.findOne({

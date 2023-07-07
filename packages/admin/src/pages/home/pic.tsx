@@ -1,10 +1,9 @@
 import { defineComponent, onMounted, reactive, ref } from 'vue'
-import { NDataTable, NTag } from 'naive-ui'
-import { getPicList } from '@/features/pic'
+import { NButton, NDataTable, NTag } from 'naive-ui'
+import { getPicList, AddNamespace, PicDrawer } from '@/features/pic'
 import { defineTableState, usePagination } from '@/hooks'
 import { isObject } from '@cc-heart/utils'
 import { warn } from '@/utils'
-import PicDrawer from './picDrawer'
 export default defineComponent({
   name: 'Pic',
   setup() {
@@ -15,6 +14,7 @@ export default defineComponent({
       namespace: '',
     })
     const visible = ref(false)
+    const modalVisible = ref(false)
     async function getData() {
       try {
         const { data } = (await getPicList(paginationReactive.pagination)) || {}
@@ -55,6 +55,10 @@ export default defineComponent({
 
     const onChangeVisible = (bool: boolean) => (visible.value = bool)
 
+    const toggleModalVisible = () => {
+      modalVisible.value = !modalVisible.value
+    }
+
     onMounted(() => {
       getData()
     })
@@ -62,11 +66,16 @@ export default defineComponent({
     return () => (
       <div class="grid w-full h-full p-10">
         <div class="place-self-center w-full">
+          <NButton onClick={toggleModalVisible}>新增</NButton>
           <NDataTable {...state} pagination={paginationReactive.pagination} />
           <PicDrawer
             {...picDrawerProps}
             visible={visible.value}
             onChange={onChangeVisible}
+          />
+          <AddNamespace
+            visible={modalVisible.value}
+            onUpdateVisible={toggleModalVisible}
           />
         </div>
       </div>

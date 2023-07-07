@@ -1,9 +1,9 @@
 import { defineComponent, watch } from 'vue'
-import { Drawer } from '@/features/components'
+import { Drawer } from '@/features/components/index.js'
 import { NDataTable, NImage, NPopover, NTag } from 'naive-ui'
-import { defineTableState, useImagePath, usePagination } from '@/hooks'
-import { getUploadFileList } from '@/features/pic'
-import { isObject } from '@cc-heart/utils'
+import { defineTableState, useImagePath, usePagination } from '@/hooks/index.js'
+import { getUploadFileList, getFileListByPath } from '@/features/pic/index.js'
+import { isObject, noop } from '@cc-heart/utils'
 export default defineComponent({
   props: {
     visible: {
@@ -12,7 +12,7 @@ export default defineComponent({
     },
     onChange: {
       type: Function,
-      default: () => {},
+      default: noop,
     },
     nid: {
       type: Number,
@@ -31,6 +31,9 @@ export default defineComponent({
         namespace,
         ...paginationReactive.pagination,
       })
+
+      // TODO: refactor
+      // console.log(await getFileListByPath(namespace))
       if (isObject(data)) {
         const { columns, dataSource, total } = data
         state.data = dataSource

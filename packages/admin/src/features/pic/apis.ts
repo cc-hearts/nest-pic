@@ -1,5 +1,5 @@
 import type { IPage, ITableResponse } from '@/typings'
-import { Get } from '@/utils'
+import { Get, Post } from '@/utils'
 const prefix = 'container-key'
 const uploadPrefix = 'upload'
 
@@ -16,5 +16,10 @@ export function getUploadFileList<T extends IPage & { namespace: string }>(
     `/${uploadPrefix}/getUploadFileList/${namespace}`,
     pagination
   )
+  return data
+}
+
+export function getFileListByPath(path: string) {
+  const { data } = Post(`/${uploadPrefix}/getFileListByPath`, { path })
   return data
 }

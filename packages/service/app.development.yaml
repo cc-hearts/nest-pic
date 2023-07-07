@@ -1,6 +1,6 @@
 mysql:
   type: mysql
-  database: pic
+  database: measure
   username: root
   password: '123456'
   host: localhost
@@ -11,3 +11,6 @@ oss_prefix: 'oss'
 host: 'http://localhost:30002'
 folder_name: 'file'
 port: 30002
+
+# jwt config
+secret: fpwHkyonekOUo07t

@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Query } from '@nestjs/common'
+import {Body, Controller, Get, Post, Query} from '@nestjs/common'
 import { ContainerKeyService } from './container-key.service'
-import { ContainerKeyDto } from './container-key.dto'
+import {AddNamespaceDto, ContainerKeyDto} from './container-key.dto'
 import { BaseResponse } from '../../utils/baseResponse'
 
 @Controller('container-key')
@@ -9,6 +9,11 @@ export class ContainerKeyController {
   @Post('genKey')
   genKey() {
     return this.containerKeyService.genKey()
+  }
+
+  @Post('addNamespace')
+  addNamespace(@Body() addNamespaceDto: AddNamespaceDto) {
+    return this.containerKeyService.addNamespace(addNamespaceDto)
   }
 
   get columns() {
