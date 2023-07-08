@@ -1,13 +1,13 @@
-import {Inject, Injectable} from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { createWriteStream, existsSync, mkdirSync, readdirSync } from 'fs'
-import {join, resolve} from 'path'
+import { join, resolve } from 'path'
 import { Repository } from 'typeorm'
 import { Upload } from './upload.entity'
 import { BaseResponse } from '../../utils/baseResponse'
 import { sumSkip } from '../../utils/definePagination'
 import { BasePaginationDto } from '../../common/basePagination.dto'
-import * as process from "process";
-import {getConfig} from "../../utils";
+import * as process from 'process'
+import { getConfig } from '../../utils'
 
 @Injectable()
 export class UploadService {
@@ -83,12 +83,12 @@ export class UploadService {
 
   getFile(path: string) {
     const config = getConfig()
-    const namespacePath = resolve(process.cwd(),config.folder_name, path)
+    const namespacePath = resolve(process.cwd(), config.folder_name, path)
     try {
-      const files = readdirSync(namespacePath, {withFileTypes: true})
-      const filesList: Array<{ name: string, isFile: boolean }> = []
-      files.forEach(file => {
-        filesList.push({name: file.name, isFile: file.isFile()})
+      const files = readdirSync(namespacePath, { withFileTypes: true })
+      const filesList: Array<{ name: string; isFile: boolean }> = []
+      files.forEach((file) => {
+        filesList.push({ name: file.name, isFile: file.isFile() })
       })
       return new BaseResponse(filesList, '获取文件列表成功')
     } catch (e) {

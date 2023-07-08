@@ -1,1 +1,6 @@
-button:
+delete: '删除'
+edit: '编辑'
+ok: '确定'
+pic:
+  addNamespace: '新增命名空间'
+  autoGeneratorNamespace: '自动生成命名空间'

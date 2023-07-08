@@ -1,11 +1,11 @@
-import {HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common'
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
-import { ContainerKey } from './container-key.entity'
+import { ContainerKey, REMOVE_FLAG } from './container-key.entity'
 import { nanoid } from 'nanoid'
 import { isProd } from 'utils'
-import {AddNamespaceDto, ContainerKeyDto} from './container-key.dto'
+import { AddNamespaceDto, ContainerKeyDto } from './container-key.dto'
 import { sumPagination } from '../../utils/sumPagination'
-import {BaseResponse} from "../../utils/baseResponse";
+import { BaseResponse } from '../../utils/baseResponse'
 
 @Injectable()
 export class ContainerKeyService {
@@ -17,13 +17,15 @@ export class ContainerKeyService {
     if (isProd()) return { message: 'production mode is not generator key' }
     let id = nanoid()
     while (
-      await this.containerKeyRepository.findOne({ where: { containerKey: id, uid } })
+      await this.containerKeyRepository.findOne({
+        where: { containerKey: id, uid },
+      })
     ) {
       id = nanoid()
     }
     return this.containerKeyRepository.save({
       containerKey: id,
-      uid
+      uid,
     })
   }
 
@@ -32,32 +34,61 @@ export class ContainerKeyService {
     const namespaces = await this.containerKeyRepository.findOne({
       where: {
         containerKey,
-        uid: id
-      }
+        uid: id,
+      },
     })
 
     if (namespaces) {
-      throw new HttpException("命名空间已存在", HttpStatus.INTERNAL_SERVER_ERROR)
+      if (namespaces.removeFlag === REMOVE_FLAG.UN_REMOVE) {
+        throw new HttpException(
+          '命名空间已存在',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        )
+      } else {
+        await this.containerKeyRepository
+          .createQueryBuilder()
+          .update()
+          .set({ removeFlag: REMOVE_FLAG.UN_REMOVE })
+          .where('container_key = :containerKey AND uid = :uid', {
+            containerKey,
+            uid: id,
+          })
+          .execute()
+      }
+    } else {
+      await this.containerKeyRepository.save({
+        containerKey,
+        uid: id,
+      })
     }
+    return new BaseResponse(null, '命名空间添加成功')
+  }
 
-    await this.containerKeyRepository.save({
-      containerKey,
-      uid: id
-    })
-    return new BaseResponse(null, "命名空间添加成功")
+  async removeNamespace(id: number) {
+    await this.containerKeyRepository
+      .createQueryBuilder()
+      .update()
+      .set({ removeFlag: REMOVE_FLAG.REMOVE })
+      .where('id = :id', { id })
+      .execute()
+    return new BaseResponse(null, '删除命名空间成功')
   }
   async validateKey(key: string) {
-    if (
-      await this.containerKeyRepository.findOne({
-        where: { containerKey: key },
-      })
-    ) {
-      return true
-    }
-    return false
+    return !!(await this.containerKeyRepository.findOne({
+      where: { containerKey: key },
+    }))
   }
 
   async getPicList(pagination: ContainerKeyDto) {
-    return await sumPagination(pagination, this.containerKeyRepository)
+    return await sumPagination(
+      pagination,
+      this.containerKeyRepository,
+      (db) => {
+        db = db.where('remove_flag = :removeFlag', {
+          removeFlag: REMOVE_FLAG.UN_REMOVE,
+        })
+        return db
+      }
+    )
   }
 }

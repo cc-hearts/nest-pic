@@ -7,6 +7,7 @@ import { transformColumnToData } from '@/utils/tranverse'
 import { IFormExpose } from '@/typings/form'
 import { addNamespace } from '../apis'
 import { successMsg } from '@/utils'
+import { useI18n } from 'vue-i18n'
 export default defineComponent({
   name: 'AddNamespaceModal',
   props: {
@@ -21,6 +22,7 @@ export default defineComponent({
   },
   emits: ['refresh'],
   setup(props, { emit }) {
+    const { t } = useI18n()
     const handleCancelVisible = () => {
       props.onUpdateVisible()
     }
@@ -53,7 +55,7 @@ export default defineComponent({
       <NModal
         show={props.visible}
         preset="card"
-        title="添加命名空间"
+        title={t('pic.addNamespace')}
         mask-closable={false}
         style="width: 600px"
         onMaskClick={handleCancelVisible}
@@ -66,7 +68,7 @@ export default defineComponent({
           footer: () => (
             <div class="text-right">
               <NButton type="success" onClick={handleSubmit}>
-                确定
+                {t('ok')}
               </NButton>
             </div>
           ),

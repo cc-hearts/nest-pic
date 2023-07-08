@@ -1,5 +1,5 @@
 import type { IPage, ITableResponse } from '@/typings'
-import { Get, Post } from '@/utils'
+import { Delete, Get, Post } from '@/utils'
 import { transformPaginationParamsType } from '@/utils/transform'
 const prefix = 'container-key'
 const uploadPrefix = 'upload'
@@ -34,5 +34,10 @@ export function addNamespace(name: string) {
 
 export function genNamespaceApi() {
   const { data } = Post(`/${prefix}/genKey`)
+  return data
+}
+
+export function removeNamespace(id: number) {
+  const { data } = Delete(`/${prefix}/removeNamespace/${id}`)
   return data
 }

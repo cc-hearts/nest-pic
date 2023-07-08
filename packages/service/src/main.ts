@@ -9,8 +9,8 @@ import { join } from 'path'
 import { urlencoded, json } from 'express'
 
 import { getConfig } from 'utils'
-import {AuthorizationGuard} from "./guard/authorization.guard";
-import {JwtService} from "@nestjs/jwt";
+import { AuthorizationGuard } from './guard/authorization.guard'
+import { JwtService } from '@nestjs/jwt'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)

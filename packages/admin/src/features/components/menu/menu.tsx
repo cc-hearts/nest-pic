@@ -3,6 +3,7 @@ import { NMenu } from 'naive-ui'
 import { useRoute } from 'vue-router'
 import { menuOptions } from './menuConstants.js'
 export default defineComponent({
+  name: 'MenuComponents',
   setup() {
     const route = useRoute()
     const state = reactive({

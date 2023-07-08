@@ -4,6 +4,7 @@ import { drawerPlacement } from '@/configs'
 import { noop } from '@cc-heart/utils'
 
 export default defineComponent({
+  name: 'DrawerComponents',
   props: {
     visible: {
       type: Boolean,

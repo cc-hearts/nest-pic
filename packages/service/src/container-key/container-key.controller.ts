@@ -1,9 +1,17 @@
-import {Body, Controller, Get, Post, Query} from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common'
 import { ContainerKeyService } from './container-key.service'
-import {AddNamespaceDto, ContainerKeyDto} from './container-key.dto'
+import { AddNamespaceDto, ContainerKeyDto } from './container-key.dto'
 import { BaseResponse } from '../../utils/baseResponse'
-import {Profile} from "../../decorators/profile";
-import {IUserInfo} from "../../typings";
+import { Profile } from '../../decorators/profile'
+import { IUserInfo } from '../../typings'
 
 @Controller('container-key')
 export class ContainerKeyController {
@@ -15,9 +23,18 @@ export class ContainerKeyController {
   }
 
   @Post('addNamespace')
-  addNamespace(@Body() addNamespaceDto: AddNamespaceDto, @Profile() user: IUserInfo) {
+  addNamespace(
+    @Body() addNamespaceDto: AddNamespaceDto,
+    @Profile() user: IUserInfo
+  ) {
     const { uid } = user
     return this.containerKeyService.addNamespace(addNamespaceDto, uid)
+  }
+
+  @Delete('removeNamespace/:id')
+  removeNamespace(@Param() params: { id: number }) {
+    const { id } = params
+    return this.containerKeyService.removeNamespace(id)
   }
 
   get columns() {
@@ -33,8 +50,8 @@ export class ContainerKeyController {
         title: '操作',
         key: 'action',
         align: 'center',
-        slot: 'action'
-      }
+        slot: 'action',
+      },
     ]
   }
 

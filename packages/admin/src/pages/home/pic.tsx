@@ -1,30 +1,48 @@
 import { defineComponent, onMounted, reactive, ref } from 'vue'
-import { NButton, NDataTable, NTag } from 'naive-ui'
+import { NButton, NDataTable, NTag, useDialog } from 'naive-ui'
 import {
   getPicList,
   AddNamespace,
   PicDrawer,
   genNamespaceApi,
+  removeNamespace,
 } from '@/features/pic'
 import { defineTableState, usePagination } from '@/hooks'
 import { isObject, noop } from '@cc-heart/utils'
 import type { fn } from '@cc-heart/utils/helper'
 import { successMsg, warn } from '@/utils'
 import { transformPaginationParams } from '@/utils/transform'
+import { useI18n } from 'vue-i18n'
 export default defineComponent({
   name: 'Pic',
   setup() {
     const { paginationReactive, _sizeChange, _currentChange } = usePagination()
-
+    const { t } = useI18n()
+    const state = defineTableState()
+    const visible = ref(false)
+    const modalVisible = ref(false)
     const onUpdatePage = _currentChange(getData)
     const onUpdatePageSize = _sizeChange(getData)
-    const state = defineTableState()
     const picDrawerProps = reactive({
       nid: -1,
       namespace: '',
     })
-    const visible = ref(false)
-    const modalVisible = ref(false)
+
+    const dialog = useDialog()
+    const handleDeleteTableData = (rowData) => {
+      dialog.warning({
+        title: '确认框',
+        positiveText: '确定',
+        negativeText: '取消',
+        onPositiveClick: async () => {
+          const { id } = rowData
+          const { message } = await removeNamespace(id)
+          successMsg(message)
+          getData()
+        },
+      })
+    }
+
     async function getData() {
       try {
         const { data } =
@@ -61,9 +79,20 @@ export default defineComponent({
                   break
                 case 'action':
                   render = (rowData) => {
-                    return <div>
-                      <NButton type='error' dashed>删除</NButton>
-                    </div>
+                    return (
+                      <div>
+                        <NButton ghost type="warning" class="m-r-2">
+                          {t('edit')}
+                        </NButton>
+                        <NButton
+                          type="error"
+                          ghost
+                          onClick={() => handleDeleteTableData(rowData)}
+                        >
+                          {t('delete')}
+                        </NButton>
+                      </div>
+                    )
                   }
                   break
               }
@@ -99,10 +128,17 @@ export default defineComponent({
       <div class="grid w-full h-full p-10">
         <div class="place-self-center w-full">
           <div class="m-b-2 text-right">
-            <NButton class="m-r-2" onClick={toggleModalVisible}>
-              新增命名空间
+            <NButton
+              class="m-r-2"
+              onClick={toggleModalVisible}
+              type="primary"
+              ghost
+            >
+              {t('pic.addNamespace')}
             </NButton>
-            <NButton onClick={genNamespace}>自动生成命名空间</NButton>
+            <NButton onClick={genNamespace} type="primary" ghost>
+              {t('pic.autoGeneratorNamespace')}
+            </NButton>
           </div>
           <NDataTable
             remote
