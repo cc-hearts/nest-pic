@@ -1,4 +1,5 @@
 import type { MenuOption } from 'naive-ui'
+import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 
 function useRouterLink(label: string, path: string) {
@@ -7,7 +8,11 @@ function useRouterLink(label: string, path: string) {
     key: path,
   }
 }
-export const menuOptions: MenuOption[] = [
-  useRouterLink('命名空间', '/home/pic'),
-  useRouterLink('令牌管理', '/tokenManger'),
-]
+export function getMenuOptions() {
+  const { t } = useI18n()
+  const menuOptions: MenuOption[] = [
+    useRouterLink(t('login.label'), '/login'),
+    useRouterLink(t('pic.label'), '/home/pic'),
+  ]
+  return menuOptions
+}

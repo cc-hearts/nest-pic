@@ -1,4 +1,4 @@
-import type { IForm } from '@/typings/form.ts'
+import type { IForm, IFormItem } from '@/typings/form.ts'
 import { NForm, NFormItemGi, NGrid, NInput } from 'naive-ui'
 import { defineComponent, ref, type PropType } from 'vue'
 
@@ -19,8 +19,12 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
+    rules: {
+      type: Object,
+      default: () => ({}),
+    },
   },
-  setup(props, { attrs, expose, emit }) {
+  setup(props, { attrs, expose }) {
     const formRef = ref()
     const columns: IForm = props.columns || ([] as IForm)
     const cols = Number(attrs?.cols) || DEFAULT_COLS
@@ -37,26 +41,27 @@ export default defineComponent({
       })
     }
 
-    const handleChange = (e, column) => {
+    const handleChange = (e: any, column: IFormItem) => {
       const { field } = column
       const fields = props.modelValue
       fields[field] = e
     }
 
     expose({ validate })
+
     return () => (
-      <NForm ref={formRef} model={props.modelValue}>
+      <NForm ref={formRef} model={props.modelValue} rules={props.rules}>
         <NGrid cols={cols} xGap={24}>
           {columns.map((column) => {
             const Component = Reflect.get(componentReflect, column.type)
             const span = column.span || DEFAULT_SPAN
             const formProps = column.props || {}
             return (
-              <NFormItemGi span={span} label={column.label}>
+              <NFormItemGi path={column.field} span={span} label={column.label}>
                 <Component
                   {...formProps}
                   value={props.modelValue[column.field]}
-                  onUpdateValue={(e) => handleChange(e, column)}
+                  onUpdateValue={(e: any) => handleChange(e, column)}
                 />
               </NFormItemGi>
             )

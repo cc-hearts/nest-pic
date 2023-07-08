@@ -1,11 +1,14 @@
 import { NButton, NModal } from 'naive-ui'
-import { noop } from '@cc-heart/utils'
-import { defineComponent, ref } from 'vue'
+import { hasOwn, noop } from '@cc-heart/utils'
+import { defineComponent, ref, watch } from 'vue'
 import CForm from '@/components/form/form'
 import { defineFormColumn } from '@/hooks/define/defineFormColumn'
-import { transformColumnToData } from '@/utils/tranverse'
+import {
+  transformColumnRulesByData,
+  transformColumnToData,
+} from '@/utils/tranverse'
 import { IFormExpose } from '@/typings/form'
-import { addNamespace } from '../apis'
+import { addNamespace, updateNamespace } from '../apis'
 import { successMsg } from '@/utils'
 import { useI18n } from 'vue-i18n'
 export default defineComponent({
@@ -19,9 +22,17 @@ export default defineComponent({
       type: Function,
       default: noop,
     },
+    type: {
+      type: String,
+      default: 'add',
+    },
+    namespaceId: {
+      type: Number,
+      default: -1,
+    },
   },
   emits: ['refresh'],
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     const { t } = useI18n()
     const handleCancelVisible = () => {
       props.onUpdateVisible()
@@ -30,32 +41,57 @@ export default defineComponent({
     const columns = defineFormColumn([
       {
         field: 'name',
-        label: '命名空间',
+        label: t('namespace.name'),
         type: 'input',
+        required: true,
         props: {
-          placeholder: '请输入命名空间名称',
+          placeholder: t('namespace.namespaceInputPlaceholder'),
         },
       },
     ])
 
     const fields = transformColumnToData(columns.value)
+    const rules = transformColumnRulesByData(columns.value)
+
+    const setFieldsValue = (data: Record<string, unknown>) => {
+      Object.keys(data).forEach((key) => {
+        if (hasOwn(fields, key)) {
+          fields[key] = data[key]
+        }
+      })
+    }
+
+    expose({ setFieldsValue })
 
     const formRef = ref<IFormExpose | null>(null)
 
     const handleSubmit = async () => {
       await formRef.value?.validate()
       const name = Reflect.get(fields, 'name') as string
-      const { message } = await addNamespace(name)
+      const fn = props.type === 'add' ? addNamespace : updateNamespace
+      const args = props.type === 'add' ? [name] : [props.namespaceId, name]
+      const { message } = await Reflect.apply(fn, null, args)
       successMsg(message)
       handleCancelVisible()
       emit('refresh')
     }
 
+    watch(
+      () => props.visible,
+      (visible) => {
+        if (!visible) {
+          fields.name = ''
+        }
+      }
+    )
+
     return () => (
       <NModal
         show={props.visible}
         preset="card"
-        title={t('pic.addNamespace')}
+        title={t('pic.addNamespace', {
+          type: props.type === 'add' ? t('add') : t('edit'),
+        })}
         mask-closable={false}
         style="width: 600px"
         onMaskClick={handleCancelVisible}
@@ -63,7 +99,12 @@ export default defineComponent({
       >
         {{
           default: () => (
-            <CForm columns={columns.value} v-model={fields} ref={formRef} />
+            <CForm
+              columns={columns.value}
+              v-model={fields}
+              ref={formRef}
+              rules={rules}
+            />
           ),
           footer: () => (
             <div class="text-right">

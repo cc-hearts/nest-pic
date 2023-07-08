@@ -5,6 +5,8 @@ export interface IFormItem {
   span?: number
   defaultValue?: string | number | Array<unknown>
   props?: Record<string, any>
+  required?: boolean
+  [s: string]: unknown
 }
 export type IForm = Array<IFormItem>
 

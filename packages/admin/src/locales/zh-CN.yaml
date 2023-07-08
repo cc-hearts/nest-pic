@@ -1,6 +1,24 @@
 delete: '删除'
+add: '新增'
 edit: '编辑'
 ok: '确定'
+positiveText: '确认'
+negativeText: '取消'
 pic:
-  addNamespace: '新增命名空间'
+  label: '命名空间'
+  addNamespace: '%{type}命名空间'
   autoGeneratorNamespace: '自动生成命名空间'
+  confirmTitle: "确认框"
+  confirmContent: '是否删除该命名空间'
+
+login:
+  label: '登陆'
+  username: '账号'
+  usernamePlaceholder: '请输入账号'
+  password: '密码'
+  passwordPlaceholder: '请输入密码'
+  loginButton: '登录'
+
+namespace:
+  name: '命名空间'
+  namespaceInputPlaceholder: '请输入命名空间名称'

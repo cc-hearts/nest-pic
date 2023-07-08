@@ -29,6 +29,16 @@ export class ContainerKeyService {
     })
   }
 
+  async updateNamespace(id: number,name:string) {
+    await this.containerKeyRepository.createQueryBuilder()
+      .update()
+      .set({ containerKey: name })
+      .where("id = :id", { id })
+      .execute()
+
+    return new BaseResponse(null, '更新成功')
+  }
+
   async addNamespace(dto: AddNamespaceDto, id: number) {
     const { name: containerKey } = dto
     const namespaces = await this.containerKeyRepository.findOne({

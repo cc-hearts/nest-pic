@@ -6,37 +6,44 @@ import { loginApi } from '@/features/login/api.ts'
 import { IFormExpose } from '@/typings/form.ts'
 import { transformColumnToData } from '@/utils/tranverse.ts'
 import { setToken } from '@/storage/token.ts'
+import { useI18n } from 'vue-i18n'
+import { successMsg } from '@/utils'
+import { ILoginParams } from '@/features/login/types'
 
 export default defineComponent({
   setup() {
+    const { t } = useI18n()
     const columns = defineFormColumn([
       {
         type: 'input',
-        label: '账号',
+        label: t('login.username'),
         field: 'username',
         props: {
-          placeholder: '请输入账号',
+          placeholder: t('login.usernamePlaceholder'),
         },
       },
       {
         type: 'input',
-        label: '密码',
+        label: t('login.password'),
         field: 'password',
         props: {
-          placeholder: '请输入密码',
+          placeholder: t('login.passwordPlaceholder'),
         },
       },
     ])
 
-    const fieldList = transformColumnToData(columns.value)
+    const fieldList = transformColumnToData<ILoginParams>(columns.value)
 
     const formRef = ref<IFormExpose | null>(null)
     const login = async () => {
       try {
         await formRef.value?.validate()
-        const data = await loginApi({ ...fieldList })
-        const { accessToken } = data
-        accessToken && setToken(accessToken)
+        const { data, message } = await loginApi({ ...fieldList })
+        if (data) {
+          const { accessToken } = data
+          successMsg(message)
+          accessToken && setToken(accessToken)
+        }
       } catch (e) {
         console.log(e)
       }
@@ -48,7 +55,7 @@ export default defineComponent({
           ref={formRef}
           columns={columns.value}
         ></CForm>
-        <NButton onClick={login}>登陆</NButton>
+        <NButton onClick={login}>{t('login.loginButton')}</NButton>
       </div>
     )
   },

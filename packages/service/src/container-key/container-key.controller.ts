@@ -4,11 +4,11 @@ import {
   Delete,
   Get,
   Param,
-  Post,
+  Post, Put,
   Query,
 } from '@nestjs/common'
 import { ContainerKeyService } from './container-key.service'
-import { AddNamespaceDto, ContainerKeyDto } from './container-key.dto'
+import {AddNamespaceDto, ContainerKeyDto, UpdateNamespaceDto} from './container-key.dto'
 import { BaseResponse } from '../../utils/baseResponse'
 import { Profile } from '../../decorators/profile'
 import { IUserInfo } from '../../typings'
@@ -29,6 +29,14 @@ export class ContainerKeyController {
   ) {
     const { uid } = user
     return this.containerKeyService.addNamespace(addNamespaceDto, uid)
+  }
+
+  @Put('updateNamespace')
+  updateNamespace(
+    @Body() updateNamespaceDto: UpdateNamespaceDto
+  ) {
+    const { id , name } = updateNamespaceDto
+    return this.containerKeyService.updateNamespace(id,name)
   }
 
   @Delete('removeNamespace/:id')

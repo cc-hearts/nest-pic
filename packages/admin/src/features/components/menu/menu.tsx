@@ -1,7 +1,7 @@
 import { defineComponent, reactive, watch } from 'vue'
 import { NMenu } from 'naive-ui'
 import { useRoute } from 'vue-router'
-import { menuOptions } from './menuConstants.js'
+import { getMenuOptions } from './menuConstants.js'
 export default defineComponent({
   name: 'MenuComponents',
   setup() {
@@ -21,7 +21,7 @@ export default defineComponent({
       <NMenu
         mode="horizontal"
         v-model:value={state.activeKey}
-        options={menuOptions}
+        options={getMenuOptions()}
       ></NMenu>
     )
   },

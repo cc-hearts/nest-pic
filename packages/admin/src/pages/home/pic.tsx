@@ -9,10 +9,12 @@ import {
 } from '@/features/pic'
 import { defineTableState, usePagination } from '@/hooks'
 import { isObject, noop } from '@cc-heart/utils'
-import type { fn } from '@cc-heart/utils/helper'
+import type { fn, getArraySubitem } from '@cc-heart/utils/helper'
 import { successMsg, warn } from '@/utils'
 import { transformPaginationParams } from '@/utils/transform'
 import { useI18n } from 'vue-i18n'
+import { TransverseIDataSource } from '@/typings'
+type IData = getArraySubitem<TransverseIDataSource<typeof getPicList>>
 export default defineComponent({
   name: 'Pic',
   setup() {
@@ -21,6 +23,13 @@ export default defineComponent({
     const state = defineTableState()
     const visible = ref(false)
     const modalVisible = ref(false)
+    const namespaceState = reactive({
+      type: 'add',
+      namespaceId: -1,
+    })
+    const namespaceRef = ref<{
+      setFieldsValue: (data: Record<string, unknown>) => void
+    } | null>(null)
     const onUpdatePage = _currentChange(getData)
     const onUpdatePageSize = _sizeChange(getData)
     const picDrawerProps = reactive({
@@ -29,17 +38,26 @@ export default defineComponent({
     })
 
     const dialog = useDialog()
-    const handleDeleteTableData = (rowData) => {
+    const handleDeleteTableData = (rowData: IData) => {
       dialog.warning({
-        title: '确认框',
-        positiveText: '确定',
-        negativeText: '取消',
+        title: t('pic.confirmTitle'),
+        content: t('pic.confirmContent'),
+        positiveText: t('positiveText'),
+        negativeText: t('negativeText'),
         onPositiveClick: async () => {
           const { id } = rowData
           const { message } = await removeNamespace(id)
           successMsg(message)
           getData()
         },
+      })
+    }
+
+    const handleEditNamespace = (rowData: IData) => {
+      namespaceState.namespaceId = rowData.id
+      toggleModalVisible('edit')
+      namespaceRef.value?.setFieldsValue({
+        name: rowData.containerKey,
       })
     }
 
@@ -81,7 +99,12 @@ export default defineComponent({
                   render = (rowData) => {
                     return (
                       <div>
-                        <NButton ghost type="warning" class="m-r-2">
+                        <NButton
+                          ghost
+                          type="warning"
+                          class="m-r-2"
+                          onClick={() => handleEditNamespace(rowData)}
+                        >
                           {t('edit')}
                         </NButton>
                         <NButton
@@ -110,7 +133,8 @@ export default defineComponent({
 
     const onChangeVisible = (bool: boolean) => (visible.value = bool)
 
-    const toggleModalVisible = () => {
+    const toggleModalVisible = (type: 'add' | 'edit' = 'add') => {
+      namespaceState.type = type
       modalVisible.value = !modalVisible.value
     }
 
@@ -130,11 +154,11 @@ export default defineComponent({
           <div class="m-b-2 text-right">
             <NButton
               class="m-r-2"
-              onClick={toggleModalVisible}
+              onClick={() => toggleModalVisible('add')}
               type="primary"
               ghost
             >
-              {t('pic.addNamespace')}
+              {t('pic.addNamespace', { type: t('add') })}
             </NButton>
             <NButton onClick={genNamespace} type="primary" ghost>
               {t('pic.autoGeneratorNamespace')}
@@ -155,7 +179,9 @@ export default defineComponent({
             onChange={onChangeVisible}
           />
           <AddNamespace
+            ref={namespaceRef}
             visible={modalVisible.value}
+            {...namespaceState}
             onUpdateVisible={toggleModalVisible}
             onRefresh={getData}
           />

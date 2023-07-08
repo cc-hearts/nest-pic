@@ -6,3 +6,8 @@ export class AddNamespaceDto {
   @IsNotEmpty()
   name: string
 }
+
+export class UpdateNamespaceDto extends AddNamespaceDto {
+  @IsNotEmpty()
+  id: number
+}
