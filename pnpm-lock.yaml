@@ -22,9 +22,6 @@ importers:
       '@intlify/unplugin-vue-i18n':
         specifier: ^0.10.1
         version: 0.10.1(vue-i18n@9.2.2)
-      '@nestjs/jwt':
-        specifier: ^10.1.0
-        version: 10.1.0(@nestjs/common@9.3.12)
       '@types/node':
         specifier: ^20.3.3
         version: 20.3.3

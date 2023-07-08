@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --filter @pic/admin run dev",
-    "service": "pnpm --filter @pic/nest run start:dev"
+    "service": "pnpm --filter @pic/nest run start:dev",
+    "prettier": "pnpm --filter @pic/* run prettier"
   },
   "keywords": [
     "pic",
