@@ -2,18 +2,22 @@ import {Body, Controller, Get, Post, Query} from '@nestjs/common'
 import { ContainerKeyService } from './container-key.service'
 import {AddNamespaceDto, ContainerKeyDto} from './container-key.dto'
 import { BaseResponse } from '../../utils/baseResponse'
+import {Profile} from "../../decorators/profile";
+import {IUserInfo} from "../../typings";
 
 @Controller('container-key')
 export class ContainerKeyController {
   constructor(private readonly containerKeyService: ContainerKeyService) {}
   @Post('genKey')
-  genKey() {
-    return this.containerKeyService.genKey()
+  genKey(@Profile() user: IUserInfo) {
+    const { uid } = user
+    return this.containerKeyService.genKey(uid)
   }
 
   @Post('addNamespace')
-  addNamespace(@Body() addNamespaceDto: AddNamespaceDto) {
-    return this.containerKeyService.addNamespace(addNamespaceDto)
+  addNamespace(@Body() addNamespaceDto: AddNamespaceDto, @Profile() user: IUserInfo) {
+    const { uid } = user
+    return this.containerKeyService.addNamespace(addNamespaceDto, uid)
   }
 
   get columns() {
@@ -25,6 +29,12 @@ export class ContainerKeyController {
         align: 'center',
         slot: 'containerKey',
       },
+      {
+        title: '操作',
+        key: 'action',
+        align: 'center',
+        slot: 'action'
+      }
     ]
   }
 

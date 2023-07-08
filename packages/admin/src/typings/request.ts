@@ -7,10 +7,10 @@ export interface IBaseResponse<T = any> {
 }
 
 export interface IPage {
-  pageNum: number
+  page: number
   pageSize: number
 }
 
 export interface IPaginationParams {
-  total?: number
+  itemCount?: number
 }

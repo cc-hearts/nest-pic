@@ -6,5 +6,5 @@ import { IUserInfo } from 'typings'
  */
 export const Profile = createParamDecorator((_, ctx: ExecutionContext) => {
   const request = ctx.switchToHttp().getRequest()
-  return request.user as IUserInfo
+  return request._user as IUserInfo
 })

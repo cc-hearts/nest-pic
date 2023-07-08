@@ -4,6 +4,7 @@ import { NDataTable, NImage, NPopover, NTag } from 'naive-ui'
 import { defineTableState, useImagePath, usePagination } from '@/hooks/index.js'
 import { getUploadFileList, getFileListByPath } from '@/features/pic/index.js'
 import { isObject, noop } from '@cc-heart/utils'
+import { transformPaginationParams } from '@/utils/transform'
 export default defineComponent({
   props: {
     visible: {
@@ -29,7 +30,7 @@ export default defineComponent({
     const getData = async (namespace: string) => {
       const { data } = await getUploadFileList({
         namespace,
-        ...paginationReactive.pagination,
+        ...transformPaginationParams(paginationReactive.pagination),
       })
 
       // TODO: refactor
@@ -37,7 +38,7 @@ export default defineComponent({
       if (isObject(data)) {
         const { columns, dataSource, total } = data
         state.data = dataSource
-        paginationReactive.total = total
+        paginationReactive.itemCount = total
         state.columns = columns.map((column) => {
           if (column.slot === 'filePath') {
             column.render = (rowData) => {

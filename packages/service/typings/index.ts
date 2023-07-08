@@ -18,6 +18,6 @@ export interface exceptionResponse {
 }
 
 export interface IUserInfo {
-  id: number
+  uid: number
   // TODO: user info
 }

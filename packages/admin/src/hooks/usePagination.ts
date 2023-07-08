@@ -11,16 +11,16 @@ export function usePagination(
     } & IPaginationParams
   >({
     pagination: {
-      pageNum: 1,
+      page: 1,
       pageSize: 10,
       ...pagination,
     },
-    total: 0,
+    itemCount: 0,
     ...params,
   })
 
-  function setCurrent(pageNum: number, callback?: fn) {
-    paginationReactive.pagination.pageNum = pageNum
+  function setCurrent(page: number, callback?: fn) {
+    paginationReactive.pagination.page = page
     callback instanceof Function && callback()
   }
 
@@ -32,8 +32,8 @@ export function usePagination(
   }
 
   function _currentChange(cb?: fn) {
-    return function (pageNum: number) {
-      setCurrent(pageNum, cb)
+    return function (page: number) {
+      setCurrent(page, cb)
     }
   }
 

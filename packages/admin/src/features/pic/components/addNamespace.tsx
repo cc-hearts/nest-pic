@@ -1,10 +1,12 @@
-import { NButton, NCard, NModal } from 'naive-ui'
+import { NButton, NModal } from 'naive-ui'
 import { noop } from '@cc-heart/utils'
 import { defineComponent, ref } from 'vue'
 import CForm from '@/components/form/form'
 import { defineFormColumn } from '@/hooks/define/defineFormColumn'
 import { transformColumnToData } from '@/utils/tranverse'
 import { IFormExpose } from '@/typings/form'
+import { addNamespace } from '../apis'
+import { successMsg } from '@/utils'
 export default defineComponent({
   name: 'AddNamespaceModal',
   props: {
@@ -17,7 +19,8 @@ export default defineComponent({
       default: noop,
     },
   },
-  setup(props) {
+  emits: ['refresh'],
+  setup(props, { emit }) {
     const handleCancelVisible = () => {
       props.onUpdateVisible()
     }
@@ -27,6 +30,9 @@ export default defineComponent({
         field: 'name',
         label: '命名空间',
         type: 'input',
+        props: {
+          placeholder: '请输入命名空间名称',
+        },
       },
     ])
 
@@ -36,7 +42,11 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       await formRef.value?.validate()
-      console.log(fields);
+      const name = Reflect.get(fields, 'name') as string
+      const { message } = await addNamespace(name)
+      successMsg(message)
+      handleCancelVisible()
+      emit('refresh')
     }
 
     return () => (
@@ -47,12 +57,17 @@ export default defineComponent({
         mask-closable={false}
         style="width: 600px"
         onMaskClick={handleCancelVisible}
+        onClose={handleCancelVisible}
       >
         {{
-          default: () => <CForm columns={columns.value} v-model={fields} ref={formRef} />,
+          default: () => (
+            <CForm columns={columns.value} v-model={fields} ref={formRef} />
+          ),
           footer: () => (
             <div class="text-right">
-              <NButton type="success" onClick={handleSubmit}>确定</NButton>
+              <NButton type="success" onClick={handleSubmit}>
+                确定
+              </NButton>
             </div>
           ),
         }}

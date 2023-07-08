@@ -12,7 +12,6 @@ export class AuthorizationGuard implements CanActivate {
       throw new UnauthorizedException("token不存在")
     }
     token = token.split('Bearer ')[1]
-    console.log(token)
     try {
       request['_user'] = await this.jwtService.verifyAsync(
         token,
@@ -20,10 +19,8 @@ export class AuthorizationGuard implements CanActivate {
           secret: getConfig().secret
         }
       )
-      console.log(request._user)
     } catch (e) {
-      console.log(e)
-      throw new HttpException('错误', HttpStatus.OK);
+      throw new UnauthorizedException(e.toString())
     }
     return true
   }
