@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "pnpm --filter @pic/admin run dev",
     "service": "pnpm --filter @pic/nest run start:dev",
-    "prettier": "pnpm --filter @pic/* run prettier"
+    "prettier": "pnpm --filter @pic/* run prettier",
+    "cloc": "npx cloc ./ --exclude-lang=YAML --exclude-dir=node_modules,dist"
   },
   "keywords": [
     "pic",

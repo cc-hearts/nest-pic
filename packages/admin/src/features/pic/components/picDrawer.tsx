@@ -1,10 +1,22 @@
-import { defineComponent, watch } from 'vue'
+import { defineComponent, reactive, ref, watch } from 'vue'
 import { Drawer } from '@/features/components/index.js'
-import { NDataTable, NImage, NPopover, NTag, NTree } from 'naive-ui'
-import { defineTableState, useImagePath, usePagination } from '@/hooks/index.js'
-import { getUploadFileList, getFileListByPath } from '@/features/pic/index.js'
-import { isObject, noop } from '@cc-heart/utils'
-import { transformPaginationParams } from '@/utils/transform'
+import {
+  NAlert,
+  NBreadcrumb,
+  NBreadcrumbItem,
+  NButton,
+  NIcon,
+  NTree,
+} from 'naive-ui'
+import { getFileListByPath } from '@/features/pic/index.js'
+import { noop } from '@cc-heart/utils'
+import { Folder, FolderOpenOutline, FileTrayFull } from '@vicons/ionicons5'
+import { Key, TreeOption, TreeOptionBase } from 'naive-ui/es/tree/src/interface'
+import { useNamespace } from '@/hooks'
+import './pic.scss'
+interface TreeOptionBaseLoading {
+  isLoading?: boolean
+}
 export default defineComponent({
   props: {
     visible: {
@@ -25,44 +37,116 @@ export default defineComponent({
     },
   },
   setup(props) {
-    // const state = defineTableState()
-    // const { paginationReactive } = usePagination()
-    const getData = async (namespace: string) => {
-      // const { data } = await getUploadFileList({
-      //   namespace,
-      //   ...transformPaginationParams(paginationReactive.pagination),
-      // })
+    const path = ref<string[]>([])
+    const treeProps = reactive({
+      data: [] as (TreeOptionBase & TreeOptionBaseLoading)[],
+      parentData: null as (TreeOptionBase & TreeOptionBaseLoading) | null,
+      expandKeys: [] as Key[],
+    })
 
-      // TODO: refactor
-      const { data } = await getFileListByPath(namespace)
-      //
-      // if (isObject(data)) {
-      //   const { columns, dataSource, total } = data
-      //   state.data = dataSource
-      //   paginationReactive.itemCount = total
-      //   state.columns = columns.map((column) => {
-      //     if (column.slot === 'filePath') {
-      //       column.render = (rowData) => {
-      //         return (
-      //           <NPopover trigger="click">
-      //             {{
-      //               trigger: () => <NTag>{rowData.filePath}</NTag>,
-      //               default: () => (
-      //                 <NImage src={useImagePath(rowData.filePath)} />
-      //               ),
-      //             }}
-      //           </NPopover>
-      //         )
-      //       }
-      //     }
-      //     return column
-      //   })
-      // }
+    const updateExpandKeys = (expandedKeys: string[]) => {
+      treeProps.expandKeys = expandedKeys
+    }
+
+    const ns = useNamespace('pic')
+
+    const getAbsolutePath = (
+      key: Key,
+      propsData = treeProps.data
+    ): string | null => {
+      for (let i = 0; i < propsData.length; i++) {
+        const target = propsData[i]
+        if (target.key === key) {
+          return target.label!
+        }
+        if (target.children && Array.isArray(target.children)) {
+          const childrenKey = getAbsolutePath(key, target.children)
+          if (childrenKey) return `${target.label}/${childrenKey}`
+        }
+      }
+      return null
+    }
+
+    const nodeProps = ({ option }: { option: TreeOption }) => {
+      return {
+        async onClick() {
+          if (!option.isLeaf) {
+            option.prefix = () => (
+              <NIcon>
+                {treeProps.expandKeys.includes(option.key!) ? (
+                  <FolderOpenOutline />
+                ) : (
+                  <Folder />
+                )}
+              </NIcon>
+            )
+          }
+          const key = option.key!
+          const absolutePath = getAbsolutePath(key)
+          // loading data
+          if (absolutePath) {
+            path.value = absolutePath.split('/')
+          }
+          if (
+            !option.isLoading &&
+            treeProps.expandKeys.includes(key) &&
+            absolutePath
+          ) {
+            treeProps.parentData = option
+            getData(absolutePath)
+          }
+        },
+      }
+    }
+
+    const getData = async (namespace: string) => {
+      if (treeProps.parentData && !treeProps.parentData.isLoading) {
+        treeProps.parentData.isLoading = true
+      }
+      try {
+        const { data } = await getFileListByPath(namespace)
+        if (data && Array.isArray(data)) {
+          if (treeProps.parentData) {
+            treeProps.parentData.children = data.map((val) => {
+              const target = {
+                label: val.name,
+                key: val.id,
+              }
+              if (!val.isFile) {
+                Reflect.set(target, 'children', [])
+              } else {
+                Reflect.set(target, 'isLeaf', true)
+              }
+              Reflect.set(target, 'prefix', () => (
+                <NIcon>{!val.isFile ? <Folder /> : <FileTrayFull />}</NIcon>
+              ))
+              return target
+            })
+          }
+        }
+      } catch (e) {
+        console.error(e)
+        treeProps.parentData && (treeProps.parentData.isLoading = false)
+      }
     }
     watch(
       () => props.namespace,
       (namespace: string) => {
         if (namespace) {
+          path.value = [namespace]
+          treeProps.parentData = {
+            label: namespace,
+            isLeaf: false,
+            isLoading: true,
+            key: namespace,
+            prefix: () => (
+              <NIcon>
+                <FolderOpenOutline />
+              </NIcon>
+            ),
+          }
+          treeProps.data = [treeProps.parentData]
+          treeProps.expandKeys = [namespace]
           getData(namespace)
         }
       },
@@ -76,8 +160,27 @@ export default defineComponent({
         visible={props.visible}
         onChange={props.onChange}
       >
-        {/* <NDataTable {...state} pagination={paginationReactive.pagination} /> */}
-        <NTree block-line />
+        <NAlert type="info" showIcon={false}>
+          <NBreadcrumb class={ns.b('path')}>
+            {path.value.map((p) => {
+              return (
+                <NBreadcrumbItem>
+                  <NButton text quaternary type="primary">
+                    {p}
+                  </NButton>
+                </NBreadcrumbItem>
+              )
+            })}
+          </NBreadcrumb>
+        </NAlert>
+        <NTree
+          block-line
+          expand-on-click
+          nodeProps={nodeProps}
+          data={treeProps.data}
+          expandedKeys={treeProps.expandKeys}
+          onUpdateExpandedKeys={updateExpandKeys}
+        />
       </Drawer>
     )
   },

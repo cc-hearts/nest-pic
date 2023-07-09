@@ -19,6 +19,7 @@
     "@types/node": "^20.3.3",
     "@types/nprogress": "^0.2.0",
     "@types/vue-i18n": "^7.0.0",
+    "@vicons/ionicons5": "^0.12.0",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
     "@vueuse/head": "^1.1.26",
     "markdown-it-link-attributes": "^4.0.1",

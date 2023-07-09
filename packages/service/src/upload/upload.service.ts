@@ -8,6 +8,7 @@ import { sumSkip } from '../../utils/definePagination'
 import { BasePaginationDto } from '../../common/basePagination.dto'
 import * as process from 'process'
 import { getConfig } from '../../utils'
+import { randomUUID } from 'crypto'
 
 @Injectable()
 export class UploadService {
@@ -76,7 +77,6 @@ export class UploadService {
     })
   }
 
-  //
   updateFileName() {
     //
   }
@@ -86,9 +86,15 @@ export class UploadService {
     const namespacePath = resolve(process.cwd(), config.folder_name, path)
     try {
       const files = readdirSync(namespacePath, { withFileTypes: true })
-      const filesList: Array<{ name: string; isFile: boolean }> = []
+      const set = new Set<string>()
+      const filesList: Array<{ name: string; isFile: boolean; id: string }> = []
       files.forEach((file) => {
-        filesList.push({ name: file.name, isFile: file.isFile() })
+        let uuid = randomUUID()
+        while (set.has(uuid)) {
+          uuid = randomUUID()
+        }
+        set.add(uuid)
+        filesList.push({ name: file.name, isFile: file.isFile(), id: uuid })
       })
       return new BaseResponse(filesList, '获取文件列表成功')
     } catch (e) {

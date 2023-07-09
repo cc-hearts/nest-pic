@@ -1,0 +1,9 @@
+@use '@/assets/scss/var/variable.scss' as *;
+@use '@/assets/scss/common/mixins.scss' as *;
+
+@include b('pic-path') {
+  & > ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
