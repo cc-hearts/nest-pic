@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { createWriteStream, existsSync, mkdirSync, readdirSync } from 'fs'
 import { join, resolve } from 'path'
 import { Repository } from 'typeorm'
@@ -9,11 +9,10 @@ import { BasePaginationDto } from '../../common/basePagination.dto'
 import * as process from 'process'
 import { getConfig } from '../../utils'
 import { randomUUID } from 'crypto'
+import { GetFilePathDto } from './upload.dto'
 
 @Injectable()
 export class UploadService {
-  private readonly folderName = 'file'
-
   constructor(
     @Inject('OSS_FILE')
     private readonly ossFileRepository: Repository<Upload>
@@ -23,8 +22,9 @@ export class UploadService {
   }
   getStoredPath(containerKey = '') {
     const date = this.getFormatTime()
+    const { folder_name } = getConfig()
     const cwd = process.cwd()
-    const folderPath = join(cwd, this.folderName, containerKey, date)
+    const folderPath = join(cwd, folder_name, containerKey, date)
     if (!existsSync(folderPath)) {
       mkdirSync(folderPath, { recursive: true })
     }
@@ -42,6 +42,17 @@ export class UploadService {
       filePath,
       namespace,
     })
+  }
+
+  async getFilePath(dto: GetFilePathDto) {
+    const data = await this.ossFileRepository.findOne({
+      where: { filePath: dto.path },
+    })
+    if (!data)
+      throw new HttpException('文件不存在', HttpStatus.INTERNAL_SERVER_ERROR)
+    const { oss_prefix, host, folder_name } = getConfig()
+    const url = `${host}/${oss_prefix}/${folder_name}/${data.filePath}`
+    return new BaseResponse({ url })
   }
 
   get columns() {

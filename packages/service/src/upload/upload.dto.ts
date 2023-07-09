@@ -16,3 +16,8 @@ export class GetFileDto {
   @IsNotEmpty()
   path: string
 }
+
+export class GetFilePathDto {
+  @IsNotEmpty()
+  path: string
+}

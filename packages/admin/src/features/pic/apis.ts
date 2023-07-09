@@ -45,6 +45,13 @@ export function genNamespaceApi() {
   return data
 }
 
+export function getFilePath(path: string) {
+  const { data } = Post<{ url: string }>(`/${uploadPrefix}/getFilePath`, {
+    path,
+  })
+  return data
+}
+
 export function removeNamespace(id: number) {
   const { data } = Delete(`/${prefix}/removeNamespace/${id}`)
   return data

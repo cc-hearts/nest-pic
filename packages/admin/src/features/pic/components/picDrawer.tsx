@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watch } from 'vue'
+import { VNodeRef, defineComponent, reactive, ref, watch } from 'vue'
 import { Drawer } from '@/features/components/index.js'
 import {
   NAlert,
@@ -8,9 +8,15 @@ import {
   NIcon,
   NTree,
 } from 'naive-ui'
-import { getFileListByPath } from '@/features/pic/index.js'
+import NImagePreview from 'naive-ui/es/image/src/ImagePreview'
+import { getFileListByPath, getFilePath } from '@/features/pic/index.js'
 import { noop } from '@cc-heart/utils'
-import { Folder, FolderOpenOutline, FileTrayFull } from '@vicons/ionicons5'
+import {
+  Folder,
+  FolderOpenOutline,
+  FileTrayFull,
+  EyeOutline,
+} from '@vicons/ionicons5'
 import { Key, TreeOption, TreeOptionBase } from 'naive-ui/es/tree/src/interface'
 import { useNamespace } from '@/hooks'
 import './pic.scss'
@@ -38,6 +44,7 @@ export default defineComponent({
   },
   setup(props) {
     const path = ref<string[]>([])
+    const previewInstRef = ref<VNodeRef | null>(null)
     const treeProps = reactive({
       data: [] as (TreeOptionBase & TreeOptionBaseLoading)[],
       parentData: null as (TreeOptionBase & TreeOptionBaseLoading) | null,
@@ -65,6 +72,18 @@ export default defineComponent({
         }
       }
       return null
+    }
+
+    const handlePreview = async (key: Key, event: MouseEvent) => {
+      event.preventDefault()
+      const path = getAbsolutePath(key)
+      if (path) {
+        const { data } = await getFilePath(path)
+        if (data) {
+          previewInstRef.value?.setPreviewSrc(data.url)
+          previewInstRef.value?.toggleShow()
+        }
+      }
     }
 
     const nodeProps = ({ option }: { option: TreeOption }) => {
@@ -116,6 +135,13 @@ export default defineComponent({
                 Reflect.set(target, 'children', [])
               } else {
                 Reflect.set(target, 'isLeaf', true)
+                Reflect.set(target, 'suffix', () => (
+                  <div onClick={(e) => handlePreview(target.key, e)}>
+                    <NIcon>
+                      <EyeOutline></EyeOutline>
+                    </NIcon>
+                  </div>
+                ))
               }
               Reflect.set(target, 'prefix', () => (
                 <NIcon>{!val.isFile ? <Folder /> : <FileTrayFull />}</NIcon>
@@ -129,6 +155,7 @@ export default defineComponent({
         treeProps.parentData && (treeProps.parentData.isLoading = false)
       }
     }
+
     watch(
       () => props.namespace,
       (namespace: string) => {
@@ -181,6 +208,12 @@ export default defineComponent({
           expandedKeys={treeProps.expandKeys}
           onUpdateExpandedKeys={updateExpandKeys}
         />
+        <NImagePreview
+          ref={previewInstRef}
+          showToolbar
+          showToolbarTooltip={false}
+          clsPrefix={ns.b('preview')}
+        ></NImagePreview>
       </Drawer>
     )
   },

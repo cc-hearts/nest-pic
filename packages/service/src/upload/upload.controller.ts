@@ -16,11 +16,11 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { type Express } from 'express'
 import { UploadService } from './upload.service'
-import { join, relative } from 'path'
+import { join, relative, resolve } from 'path'
 import { getConfig } from 'utils'
 import { ContainerKeyService } from 'src/container-key/container-key.service'
 import { BasePaginationDto } from '../../common/basePagination.dto'
-import { GetFileDto, UploadFileNameDto } from './upload.dto'
+import { GetFileDto, GetFilePathDto, UploadFileNameDto } from './upload.dto'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('文件上传服务')
@@ -57,7 +57,7 @@ export class UploadController {
     Logger.log(`${filename} ${suffix} ${key}`)
     const bool = await this.containerKeyService.validateKey(key)
     if (!bool) return { message: '密钥验证失败' }
-    const { oss_prefix, host } = getConfig()
+    const { oss_prefix, host, folder_name } = getConfig()
     const path = this.uploadService.getStoredPath(key)
     if (!file)
       throw new HttpException(
@@ -77,11 +77,19 @@ export class UploadController {
     const originalName = `${filename}.${suffix}`
     const binaryFile = Buffer.from(file, 'base64')
     this.uploadService.saveBinary({ buffer: binaryFile }, path, originalName)
-    const relativePath = relative(process.cwd(), join(path, originalName))
+    const relativePath = relative(
+      resolve(process.cwd(), folder_name),
+      join(path, originalName)
+    )
     this.uploadService.saveOssFile(relativePath, key)
-    const url = `${host}/${oss_prefix}/${relativePath}`
+    const url = `${host}/${oss_prefix}/${folder_name}/${relativePath}`
     Logger.log(url, 'save url:')
     return { url }
+  }
+
+  @Post('getFilePath')
+  getFilePath(@Body() getFilePathDto: GetFilePathDto) {
+    return this.uploadService.getFilePath(getFilePathDto)
   }
 
   @Put('modifyPicName')
