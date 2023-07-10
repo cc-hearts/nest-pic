@@ -157,9 +157,11 @@ export default defineComponent({
     }
 
     watch(
-      () => props.namespace,
-      (namespace: string) => {
-        if (namespace) {
+      () => props.visible,
+      (visible: boolean) => {
+        if (visible) {
+          const { namespace } = props
+          if (!namespace) return
           path.value = [namespace]
           treeProps.parentData = {
             label: namespace,
