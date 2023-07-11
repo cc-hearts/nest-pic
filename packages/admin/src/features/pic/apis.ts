@@ -56,3 +56,11 @@ export function removeNamespace(id: number) {
   const { data } = Delete(`/${prefix}/removeNamespace/${id}`)
   return data
 }
+
+export function changeFileName(params: {
+  originFilePath: string
+  fileName: string
+}) {
+  const { data } = Put(`/${uploadPrefix}/modifyPicName`, params)
+  return data
+}

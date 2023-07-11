@@ -11,6 +11,11 @@ pic:
   confirmTitle: "确认框"
   confirmContent: '是否删除该命名空间'
 
+changeFileName:
+  label: "修改文件名称"
+  name: "文件名称"
+  fileNamePlaceholder: "请输入文件名称"
+
 login:
   label: '登陆'
   username: '账号'

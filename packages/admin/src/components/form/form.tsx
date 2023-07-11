@@ -58,11 +58,15 @@ export default defineComponent({
             const formProps = column.props || {}
             return (
               <NFormItemGi path={column.field} span={span} label={column.label}>
-                <Component
-                  {...formProps}
-                  value={props.modelValue[column.field]}
-                  onUpdateValue={(e: any) => handleChange(e, column)}
-                />
+                {column.render instanceof Function ? (
+                  column.render()
+                ) : (
+                  <Component
+                    {...formProps}
+                    value={props.modelValue[column.field]}
+                    onUpdateValue={(e: any) => handleChange(e, column)}
+                  />
+                )}
               </NFormItemGi>
             )
           })}

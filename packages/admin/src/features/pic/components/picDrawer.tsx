@@ -16,10 +16,13 @@ import {
   FolderOpenOutline,
   FileTrayFull,
   EyeOutline,
+  PencilOutline,
 } from '@vicons/ionicons5'
 import { Key, TreeOption, TreeOptionBase } from 'naive-ui/es/tree/src/interface'
 import { useNamespace } from '@/hooks'
 import './pic.scss'
+import ChangeFileNameModal from './changeFileNameModal'
+import { fn } from '@cc-heart/utils/helper'
 interface TreeOptionBaseLoading {
   isLoading?: boolean
 }
@@ -45,10 +48,15 @@ export default defineComponent({
   setup(props) {
     const path = ref<string[]>([])
     const previewInstRef = ref<VNodeRef | null>(null)
+    const changeFileNameModalRef = ref<{ setFieldsValue: fn }>()
     const treeProps = reactive({
       data: [] as (TreeOptionBase & TreeOptionBaseLoading)[],
       parentData: null as (TreeOptionBase & TreeOptionBaseLoading) | null,
       expandKeys: [] as Key[],
+    })
+    const modalVisibleProps = reactive({
+      visible: false,
+      prop: { path: '' } as { path: string },
     })
 
     const updateExpandKeys = (expandedKeys: string[]) => {
@@ -74,8 +82,40 @@ export default defineComponent({
       return null
     }
 
+    const setParentData = (
+      key: Key,
+      parentData: (TreeOptionBase & TreeOptionBaseLoading) | null = null,
+      propsData = treeProps.data,
+      status = { end: false }
+    ): void => {
+      if (status.end) return
+      for (let i = 0; i < propsData.length; i++) {
+        const target = propsData[i]
+        if (target.key === key) {
+          treeProps.parentData = parentData
+          status.end = true
+          return
+        }
+        if (target.children && Array.isArray(target.children)) {
+          setParentData(key, target, target.children, status)
+        }
+      }
+    }
+
+    const handleChangeFileName = async (target: TreeOption) => {
+      const { key } = target
+      if (!key) return
+      const path = getAbsolutePath(String(key))
+      if (path) {
+        modalVisibleProps.visible = true
+        Reflect.set(modalVisibleProps.prop, 'path', path)
+        setParentData(key)
+        changeFileNameModalRef.value?.setFieldsValue({ fileName: target.label })
+      }
+    }
+
     const handlePreview = async (key: Key, event: MouseEvent) => {
-      event.preventDefault()
+      event.stopPropagation()
       const path = getAbsolutePath(key)
       if (path) {
         const { data } = await getFilePath(path)
@@ -83,6 +123,14 @@ export default defineComponent({
           previewInstRef.value?.setPreviewSrc(data.url)
           previewInstRef.value?.toggleShow()
         }
+      }
+    }
+
+    const handleRefresh = () => {
+      if (treeProps.parentData) {
+        treeProps.parentData.isLoading = false
+        const key = getAbsolutePath(treeProps.parentData.key!)
+        key && getData(key)
       }
     }
 
@@ -136,10 +184,20 @@ export default defineComponent({
               } else {
                 Reflect.set(target, 'isLeaf', true)
                 Reflect.set(target, 'suffix', () => (
-                  <div onClick={(e) => handlePreview(target.key, e)}>
-                    <NIcon>
-                      <EyeOutline></EyeOutline>
-                    </NIcon>
+                  <div class="flex items-center">
+                    <span
+                      class="m-r-2"
+                      onClick={() => handleChangeFileName(target)}
+                    >
+                      <NIcon>
+                        <PencilOutline />
+                      </NIcon>
+                    </span>
+                    <span onClick={(e) => handlePreview(target.key, e)}>
+                      <NIcon>
+                        <EyeOutline />
+                      </NIcon>
+                    </span>
                   </div>
                 ))
               }
@@ -194,7 +252,7 @@ export default defineComponent({
             {path.value.map((p) => {
               return (
                 <NBreadcrumbItem>
-                  <NButton text quaternary type="primary">
+                  <NButton text type="primary">
                     {p}
                   </NButton>
                 </NBreadcrumbItem>
@@ -216,6 +274,15 @@ export default defineComponent({
           showToolbarTooltip={false}
           clsPrefix={ns.b('preview')}
         ></NImagePreview>
+
+        <ChangeFileNameModal
+          ref={changeFileNameModalRef}
+          {...modalVisibleProps}
+          onUpdateVisible={() =>
+            (modalVisibleProps.visible = !modalVisibleProps.visible)
+          }
+          onRefresh={handleRefresh}
+        />
       </Drawer>
     )
   },

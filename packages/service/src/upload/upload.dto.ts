@@ -6,9 +6,9 @@ export class UploadFileNameDto {
   @IsNotEmpty()
   fileName: string
 
-  @ApiProperty({ description: '文件id' })
+  @ApiProperty({ description: '原文件路径' })
   @IsNotEmpty()
-  id: string
+  originFilePath: string
 }
 
 export class GetFileDto {

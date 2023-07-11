@@ -1,5 +1,11 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
-import { createWriteStream, existsSync, mkdirSync, readdirSync } from 'fs'
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  renameSync,
+} from 'fs'
 import { join, resolve } from 'path'
 import { Repository } from 'typeorm'
 import { Upload } from './upload.entity'
@@ -9,7 +15,7 @@ import { BasePaginationDto } from '../../common/basePagination.dto'
 import * as process from 'process'
 import { getConfig } from '../../utils'
 import { randomUUID } from 'crypto'
-import { GetFilePathDto } from './upload.dto'
+import { GetFilePathDto, UploadFileNameDto } from './upload.dto'
 
 @Injectable()
 export class UploadService {
@@ -37,11 +43,17 @@ export class UploadService {
     writeStream.write(file.buffer)
   }
 
-  saveOssFile(filePath: string, namespace: string) {
+  saveOssFile(filePath: string, namespace: string, fileName: string) {
     return this.ossFileRepository.save({
       filePath,
       namespace,
+      fileName,
     })
+  }
+
+  getterFilePath(filePath: string) {
+    const { oss_prefix, host, folder_name } = getConfig()
+    return `${host}/${oss_prefix}/${folder_name}/${filePath}`
   }
 
   async getFilePath(dto: GetFilePathDto) {
@@ -50,8 +62,7 @@ export class UploadService {
     })
     if (!data)
       throw new HttpException('文件不存在', HttpStatus.INTERNAL_SERVER_ERROR)
-    const { oss_prefix, host, folder_name } = getConfig()
-    const url = `${host}/${oss_prefix}/${folder_name}/${data.filePath}`
+    const url = this.getterFilePath(data.filePath)
     return new BaseResponse({ url })
   }
 
@@ -88,8 +99,32 @@ export class UploadService {
     })
   }
 
-  updateFileName() {
-    //
+  getSavedFilePath(filePath: string) {
+    const { folder_name } = getConfig()
+    return join(process.cwd(), folder_name, filePath)
+  }
+
+  async updateFileName(updateFileNameDto: UploadFileNameDto) {
+    const { originFilePath, fileName } = updateFileNameDto
+    const data = await this.ossFileRepository.findOne({
+      where: { filePath: originFilePath },
+    })
+    if (data) {
+      let newFilePath: string[] | string = originFilePath
+        .split('/')
+        .slice(0, -1)
+      newFilePath.push(fileName)
+      newFilePath = newFilePath.join('/')
+      renameSync(
+        this.getSavedFilePath(originFilePath),
+        this.getSavedFilePath(newFilePath)
+      )
+      await this.ossFileRepository.update(data.id, {
+        filePath: newFilePath,
+        fileName,
+      })
+      return new BaseResponse({ url: newFilePath }, '更换名称成功')
+    }
   }
 
   getFile(path: string) {
