@@ -102,4 +102,10 @@ export class ContainerKeyService {
       }
     )
   }
+
+  async findByNamespace(namespace: string) {
+    return await this.containerKeyRepository.findOne({
+      where: { containerKey: namespace },
+    })
+  }
 }

@@ -16,12 +16,14 @@ import * as process from 'process'
 import { getConfig } from '../../utils'
 import { randomUUID } from 'crypto'
 import { GetFilePathDto, UploadFileNameDto } from './upload.dto'
+import { ContainerKeyService } from 'src/container-key/container-key.service'
 
 @Injectable()
 export class UploadService {
   constructor(
     @Inject('OSS_FILE')
-    private readonly ossFileRepository: Repository<Upload>
+    private readonly ossFileRepository: Repository<Upload>,
+    private readonly containerKeyService: ContainerKeyService
   ) {}
   getFormatTime() {
     return new Date().toISOString().split('T')[0]
@@ -43,10 +45,18 @@ export class UploadService {
     writeStream.write(file.buffer)
   }
 
-  saveOssFile(filePath: string, namespace: string, fileName: string) {
+  async saveOssFile(filePath: string, namespace: string, fileName: string) {
+    // 根据namespace 查找相应的id
+    const data = await this.containerKeyService.findByNamespace(namespace)
+    if (!data) {
+      throw new HttpException(
+        '命名空间不存在',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      )
+    }
     return this.ossFileRepository.save({
       filePath,
-      namespace,
+      namespaceId: data.id,
       fileName,
     })
   }
@@ -83,20 +93,6 @@ export class UploadService {
         slot: 'filePath',
       },
     ]
-  }
-
-  async getUploadFileList(namespace: string, pagination: BasePaginationDto) {
-    const [dataSource, total] = await this.ossFileRepository
-      .createQueryBuilder('oss')
-      .where('oss.namespace = :namespace', { namespace })
-      .skip(sumSkip(pagination))
-      .take(pagination.pageSize)
-      .getManyAndCount()
-    return new BaseResponse({
-      dataSource,
-      total,
-      columns: this.columns,
-    })
   }
 
   getSavedFilePath(filePath: string) {

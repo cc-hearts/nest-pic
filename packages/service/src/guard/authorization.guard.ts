@@ -1,8 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  HttpException,
-  HttpStatus,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common'

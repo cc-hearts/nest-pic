@@ -41,15 +41,6 @@ export class UploadController {
     return { relativePath, status: true }
   }
 
-  @Get('getUploadFileList/:namespace')
-  getUploadFileList(
-    @Param() params: { namespace: string },
-    @Query() pagination: BasePaginationDto
-  ) {
-    const { namespace } = params
-    return this.uploadService.getUploadFileList(namespace, pagination)
-  }
-
   @Post('pic')
   async pic(@Req() request) {
     const { suffix, key, file } = request.body || {}

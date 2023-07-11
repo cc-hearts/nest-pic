@@ -15,17 +15,6 @@ export function getPicList<T extends transformPaginationParamsType<IPage>>(
   return data
 }
 
-export function getUploadFileList<
-  T extends transformPaginationParamsType<IPage> & { namespace: string }
->(params: T) {
-  const { namespace, ...pagination } = params
-  const { data } = Get<ITableResponse>(
-    `/${uploadPrefix}/getUploadFileList/${namespace}`,
-    pagination
-  )
-  return data
-}
-
 export function getFileListByPath(path: string) {
   const { data } = Post(`/${uploadPrefix}/getFileListByPath`, { path })
   return data
