@@ -15,7 +15,7 @@ import {
 } from '@/utils/tranverse'
 import { IFormExpose } from '@/typings/form'
 import { hasOwn, noop } from '@cc-heart/utils'
-import { changeFileName, getFilePath } from '../apis'
+import { changeFileName } from '../apis'
 import { successMsg } from '@/utils'
 
 export default defineComponent({

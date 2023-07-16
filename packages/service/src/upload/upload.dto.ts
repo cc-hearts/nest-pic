@@ -21,3 +21,8 @@ export class GetFilePathDto {
   @IsNotEmpty()
   path: string
 }
+
+export class GetUPicConfigDto {
+  @IsNotEmpty()
+  key: string
+}

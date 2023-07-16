@@ -8,7 +8,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -19,8 +18,7 @@ import { UploadService } from './upload.service'
 import { join, relative, resolve } from 'path'
 import { getConfig } from 'utils'
 import { ContainerKeyService } from 'src/container-key/container-key.service'
-import { BasePaginationDto } from '../../common/basePagination.dto'
-import { GetFileDto, GetFilePathDto, UploadFileNameDto } from './upload.dto'
+import { GetFileDto, GetFilePathDto, GetUPicConfigDto, UploadFileNameDto } from './upload.dto'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('文件上传服务')
@@ -29,7 +27,7 @@ export class UploadController {
   constructor(
     private readonly uploadService: UploadService,
     private readonly containerKeyService: ContainerKeyService
-  ) {}
+  ) { }
 
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
@@ -97,5 +95,30 @@ export class UploadController {
   getFile(@Body() getFileDto: GetFileDto) {
     const { path } = getFileDto
     return this.uploadService.getFile(path)
+  }
+
+
+  @Get('getUPicConfig/:key')
+  // TODO: 显示UPic路径
+  async getUPicConfig(@Param() getPicConfigDto: GetUPicConfigDto, @Req() request) {
+    const { host, oss_prefix, folder_name } = getConfig();
+    const { key } = getPicConfigDto
+    return {
+      api: `${host}/v1/upload/pic`,
+      method: "POST",
+      fileParamName: 'file',
+      otherFields: {
+        headers: {
+          authorization: request.headers.authorization,
+        },
+        body: {
+          filename: `{filename}`,
+          suffix: `{suffix}`,
+          key: `${key}`,
+        }
+      },
+      urlPath: '["data", "url"]',
+      savePath: `${oss_prefix}/${folder_name}/${key}/{year}-{month}-{day}/{filename}{.suffix}`
+    }
   }
 }

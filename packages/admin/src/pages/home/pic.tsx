@@ -14,6 +14,7 @@ import { successMsg, warn } from '@/utils'
 import { transformPaginationParams } from '@/utils/transform'
 import { useI18n } from 'vue-i18n'
 import { TransverseIDataSource } from '@/typings'
+import UpicConfigModal from '@/features/pic/components/upicConfigModal'
 type IData = getArraySubitem<TransverseIDataSource<typeof getPicList>>
 export default defineComponent({
   name: 'Pic',
@@ -35,6 +36,11 @@ export default defineComponent({
     const picDrawerProps = reactive({
       nid: -1,
       namespace: '',
+    })
+
+    const showUPicConfigProps = reactive({
+      visible: false,
+      config: '',
     })
 
     const dialog = useDialog()
@@ -59,6 +65,11 @@ export default defineComponent({
       namespaceRef.value?.setFieldsValue({
         name: rowData.containerKey,
       })
+    }
+
+    const handleShowUPicConfig = (rowData: IData) => {
+      showUPicConfigProps.config = rowData.containerKey
+      showUPicConfigProps.visible = true
     }
 
     async function getData() {
@@ -99,6 +110,14 @@ export default defineComponent({
                   render = (rowData) => {
                     return (
                       <div>
+                        <NButton
+                          ghost
+                          type="success"
+                          class="m-r-2"
+                          onClick={() => handleShowUPicConfig(rowData)}
+                        >
+                          {t('pic.showUPicConfig')}
+                        </NButton>
                         <NButton
                           ghost
                           type="warning"
@@ -144,6 +163,11 @@ export default defineComponent({
       getData()
     }
 
+    const handleCancelUPicConfigVisible = () => {
+      showUPicConfigProps.visible = false
+      showUPicConfigProps.config = ''
+    }
+
     onMounted(() => {
       getData()
     })
@@ -180,10 +204,14 @@ export default defineComponent({
           />
           <AddNamespace
             ref={namespaceRef}
-            visible={modalVisible.value}
             {...namespaceState}
+            visible={modalVisible.value}
             onUpdateVisible={toggleModalVisible}
             onRefresh={getData}
+          />
+          <UpicConfigModal
+            {...showUPicConfigProps}
+            onUpdateVisible={handleCancelUPicConfigVisible}
           />
         </div>
       </div>

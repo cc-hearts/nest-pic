@@ -1,0 +1,21 @@
+.upic {
+  .n-descriptions-table-content__content {
+    display: inline !important;
+    word-break: break-all;
+  }
+
+  .upic-description {
+    transition: background-color 0.3s;
+    will-change: background-color;
+    cursor: pointer;
+    padding: 0 2px;
+
+    &:hover {
+      background-color: rgba(140, 140, 176, 0.5);
+    }
+  }
+}
+
+.upic-description {
+  word-break: break-all;
+}

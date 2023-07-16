@@ -1,7 +1,7 @@
 import type { IPage, ITableResponse } from '@/typings'
 import { Delete, Get, Post, Put } from '@/utils'
 import { transformPaginationParamsType } from '@/utils/transform'
-import { INamespaceColumn } from './types'
+import { IGetConfig, INamespaceColumn } from './types'
 const prefix = 'container-key'
 const uploadPrefix = 'upload'
 
@@ -51,5 +51,11 @@ export function changeFileName(params: {
   fileName: string
 }) {
   const { data } = Put(`/${uploadPrefix}/modifyPicName`, params)
+  return data
+}
+
+export function getUPicConfig(params: { key: string }) {
+  const { key } = params
+  const { data } = Get<IGetConfig>(`/${uploadPrefix}/getUPicConfig/${key}`)
   return data
 }
