@@ -12,8 +12,6 @@ RUN npm config set registry https://registry.npm.taobao.org
 
 RUN npm i
 
-RUN npm run build
-
 RUN cp ./app.production.yaml ./dist/app.production.yaml
 
 EXPOSE 30002
