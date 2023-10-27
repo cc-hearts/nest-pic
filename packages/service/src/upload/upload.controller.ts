@@ -70,7 +70,7 @@ export class UploadController {
       resolve(process.cwd(), folder_name),
       join(path, originalName)
     )
-    this.uploadService.saveOssFile(relativePath, key, originalName)
+    await this.uploadService.saveOssFile(relativePath, key, originalName);
     const url = `${host}/${oss_prefix}/${folder_name}/${relativePath}`
     Logger.log(url, 'save url:')
     return { url }
